@@ -24,21 +24,11 @@ for them would be useful.</p>
 
 ### *User Stories*
 
-As a user, I want to be able to: 
-- Add an application to my list of applications
-- See the list of all applications
-- Remove an application from my list
+For now, 4 user stories that will be available in the console:
+As a user, I want to be able to:
 - Choose a deadline for an application
-- Sort all application by their deadlines
 - Choose or create a category for an application
-- Filter applications by their categories
-- Search for an application
 - Add a required document to an application
-- Check off a required document in an application
 - Remove a required document
-- Upload a document for an application from the computer
-- Open a document for an application 
-- Show the progress on an application 
-- Mark an application as completed 
 
   
