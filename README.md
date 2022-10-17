@@ -24,7 +24,7 @@ for them would be useful.</p>
 
 ### *User Stories*
 
-For now, 4 user stories that will be available in the console:
+For now, 4 user stories that will be available in the console (outside of console, much more is implemented and tested):
 As a user, I want to be able to:
 - Choose a deadline for an application
 - Choose or create a category for an application

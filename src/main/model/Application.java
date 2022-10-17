@@ -42,14 +42,13 @@ public class Application {
     // REQUIRES: the date must be entered in the format mm-dd-yyyy hh:mm aa where hh-hours, mm - minutes, aa - AM or PMM
     // MODIFIES: this
     // EFFECTS: sets and returns the deadline for the application
-    public Date setDeadline(String deadline) {
+    public void setDeadline(String deadline) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
         try {
             this.deadline = dateFormat.parse(deadline);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return this.deadline;
     }
 
     public Date getDeadline() {
@@ -58,9 +57,8 @@ public class Application {
 
     // MODIFIES: this
     // EFFECTS: sets and returns the category of the application
-    public String setCategory(String categoryName) {
+    public void setCategory(String categoryName) {
         category = categoryName;
-        return category;
     }
 
     public String getCategory() {

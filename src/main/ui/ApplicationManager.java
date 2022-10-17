@@ -83,6 +83,12 @@ public class ApplicationManager {
         Application selected = selectApplication();
         System.out.print("Enter the name of the new requirement: ");
         String name = input.next();
+        for (Requirement req: selected.getRequiredDocuments()) {
+            if (name.equals(req.getName())) {
+                System.out.println("Requirement with such name already exists");
+                return;
+            }
+        }
         Requirement newRequirement = new Requirement(name);
         selected.addRequirement(newRequirement);
         printAllRequirements(selected);
@@ -108,12 +114,13 @@ public class ApplicationManager {
     // MODIFIES: this
     // EFFECTS: set the deadline for the application
     private void setDeadline() {
+        String strDate;
         Application selected = selectApplication();
         System.out.print("Enter the deadline in the format mm-dd-yyyy h:m aa where h-hours, m-minutes, aa-AM or PM: ");
         String deadline = input.next();
         selected.setDeadline(deadline);
-        System.out.println("The deadline set: ");
-        selected.getDeadline();
+        strDate = selected.getDeadline().toString();
+        System.out.println("The deadline set: " + strDate);
     }
 
     // MODIFIES: this
