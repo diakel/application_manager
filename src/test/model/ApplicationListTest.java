@@ -1,8 +1,10 @@
 package model;
 
+import exceptions.AlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,28 +28,61 @@ public class ApplicationListTest {
 
     @Test
     void testAddApplication() {
-        testApplicationList.addApplication(testApplication1);
+        try {
+            testApplicationList.addApplication(testApplication1);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         assertTrue(testApplicationList.getApplicationList().contains(testApplication1));
     }
 
     @Test
     void testAddMultipleApplications() {
-        testApplicationList.addApplication(testApplication2);
-        testApplicationList.addApplication(testApplication3);
+        try {
+            testApplicationList.addApplication(testApplication2);
+            testApplicationList.addApplication(testApplication3);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         assertTrue(testApplicationList.getApplicationList().contains(testApplication2));
         assertTrue(testApplicationList.getApplicationList().contains(testApplication3));
+    }
+
+    @Test
+    void testAddApplicationAlreadyExists() {
+        try {
+            testApplicationList.addApplication(testApplication2);
+            testApplicationList.addApplication(testApplication2);
+            fail();
+        } catch (AlreadyExistsException e) {
+            // To be expected
+        }
+
+        try {
+            testApplicationList.addApplication(testApplication1);
+            testApplicationList.addApplication(testApplication2);
+            testApplicationList.addApplication(testApplication3);
+            testApplicationList.addApplication(testApplication2);
+            fail();
+        } catch (AlreadyExistsException e) {
+            // To be expected
+        }
     }
 
     @Test
     void testRemoveApplication() {
         testApplicationList.removeApplication(testApplication1);
         assertEquals(0, testApplicationList.getApplicationList().size());
-        testApplicationList.addApplication(testApplication2);
-        testApplicationList.addApplication(testApplication3);
+        try {
+            testApplicationList.addApplication(testApplication2);
+            testApplicationList.addApplication(testApplication3);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         testApplicationList.removeApplication(testApplication2);
         assertFalse(testApplicationList.getApplicationList().contains(testApplication2));
         testApplicationList.removeApplication(testApplication3);
-        assertEquals(0, testApplicationList.getApplicationList().size());
+        assertTrue(testApplicationList.getApplicationList().isEmpty());
     }
 
     @Test
@@ -55,17 +90,37 @@ public class ApplicationListTest {
         testApplicationList.sortByDeadlines();
         assertTrue(testApplicationList.getApplicationList().isEmpty());
 
-        testApplicationList.addApplication(testApplication1);
-        testApplicationList.addApplication(testApplication2);
-        testApplicationList.addApplication(testApplication3);
+        // No deadlines set yet
+        try {
+            testApplicationList.addApplication(testApplication1);
+            testApplicationList.addApplication(testApplication2);
+            testApplicationList.addApplication(testApplication3);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         testApplicationList.sortByDeadlines();
         assertEquals(testApplication1, testApplicationList.getApplicationList().get(0));
         assertEquals(testApplication2, testApplicationList.getApplicationList().get(1));
         assertEquals(testApplication3, testApplicationList.getApplicationList().get(2));
 
-        testApplication1.setDeadline("04-20-2023 11:59 PM");
-        testApplication2.setDeadline("07-25-2023 00:00 AM");
-        testApplication3.setDeadline("06-01-2023 12:23 PM");
+        // Not all applications have deadlines
+        try {
+            testApplication1.setDeadline("04-20-2023 11:59 PM");
+            testApplication3.setDeadline("06-01-2023 12:23 PM");
+        } catch (ParseException e) {
+            fail();
+        }
+        testApplicationList.sortByDeadlines();
+        assertEquals(testApplication1, testApplicationList.getApplicationList().get(0));
+        assertEquals(testApplication2, testApplicationList.getApplicationList().get(1));
+        assertEquals(testApplication3, testApplicationList.getApplicationList().get(2));
+
+        // All applications have deadlines to be sorted by
+        try {
+            testApplication2.setDeadline("07-25-2023 00:00 AM");
+        } catch (ParseException e) {
+            fail();
+        }
         testApplicationList.sortByDeadlines();
         assertEquals(testApplication1, testApplicationList.getApplicationList().get(0));
         assertEquals(testApplication3, testApplicationList.getApplicationList().get(1));
@@ -79,12 +134,17 @@ public class ApplicationListTest {
         testApplication2.setCategory("work");
         testApplication3.setCategory("school");
         List testFilteredList = new ArrayList<Application>();
-        testFilteredList.add(testApplication1);
-        testFilteredList.add(testApplication3);
-        testApplicationList.addApplication(testApplication1);
-        testApplicationList.addApplication(testApplication2);
-        testApplicationList.addApplication(testApplication3);
+        try {
+            testFilteredList.add(testApplication1);
+            testFilteredList.add(testApplication3);
+            testApplicationList.addApplication(testApplication1);
+            testApplicationList.addApplication(testApplication2);
+            testApplicationList.addApplication(testApplication3);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         assertEquals(testFilteredList, testApplicationList.filterByCategory("school"));
+        assertEquals(testApplication2, testApplicationList.filterByCategory("work").get(0));
         assertTrue(testApplicationList.filterByCategory("job").isEmpty());
     }
 
@@ -92,8 +152,12 @@ public class ApplicationListTest {
     void testSearchByName() {
         assertEquals(null, testApplicationList.searchByName("Test Application 1"));
 
-        testApplicationList.addApplication(testApplication1);
-        testApplicationList.addApplication(testApplication2);
+        try {
+            testApplicationList.addApplication(testApplication1);
+            testApplicationList.addApplication(testApplication2);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         assertEquals(testApplication1, testApplicationList.searchByName("Test Application 1"));
         assertEquals(testApplication2, testApplicationList.searchByName("Test Application 2"));
 

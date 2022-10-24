@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.ApplicationAlreadyExistsException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,28 +19,23 @@ public class ApplicationList {
         applicationList = new ArrayList<Application>();
     }
 
-    public List<Application> getApplicationList() {
-        /*List<String> names = new ArrayList<String>();
-        for (Application app : applicationList) {
-            names.add(app.getName());
-        }
-        return names; */
-        return applicationList;
-    }
-
+    // EFFECTS: application with the same name is not already in the application list
     // MODIFIES: this
     // EFFECTS: adds a new application to the list
-    public void addApplication(Application app) {
-        applicationList.add(app);
+    public void addApplication(Application application) throws ApplicationAlreadyExistsException {
+        for (Application app : applicationList) {
+            if (app.getName() == application.getName()) {
+                throw new ApplicationAlreadyExistsException();
+            }
+        }
+        applicationList.add(application);
     }
 
-    // REQUIRES: non-empty list of applications
     // MODIFIES: this
     // EFFECTS: removes an application from the list
     public void removeApplication(Application app) {
         applicationList.remove(app);
     }
-
 
     // REQUIRES: at least two applications with deadlines in the list of applications
     // MODIFIES: this
@@ -74,5 +71,9 @@ public class ApplicationList {
             }
         }
         return null;
+    }
+
+    public List<Application> getApplicationList() {
+        return applicationList;
     }
 }

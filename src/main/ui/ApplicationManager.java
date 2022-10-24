@@ -1,12 +1,15 @@
 package ui;
 
+import exceptions.AlreadyExistsException;
 import model.Application;
 import model.ApplicationList;
 import model.Requirement;
 
+import java.text.ParseException;
 import java.util.Scanner;
 
-// Applications manager program
+// Applications manager console program
+// Based on the Teller application example: https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class ApplicationManager {
     private Application gradApp1;
     private Application gradApp2;
@@ -83,14 +86,13 @@ public class ApplicationManager {
         Application selected = selectApplication();
         System.out.print("Enter the name of the new requirement: ");
         String name = input.next();
-        for (Requirement req: selected.getRequiredDocuments()) {
-            if (name.equals(req.getName())) {
-                System.out.println("Requirement with such name already exists");
-                return;
-            }
-        }
         Requirement newRequirement = new Requirement(name);
-        selected.addRequirement(newRequirement);
+        try {
+            selected.addRequirement(newRequirement);
+        } catch (AlreadyExistsException e) {
+            System.out.println("Requirement with such name already exists");
+            return;
+        }
         printAllRequirements(selected);
     }
 
@@ -108,6 +110,7 @@ public class ApplicationManager {
                 break;
             }
         }
+        System.out.println("No such requirement exists for the chosen application");
         printAllRequirements(selected);
     }
 
@@ -118,7 +121,12 @@ public class ApplicationManager {
         Application selected = selectApplication();
         System.out.print("Enter the deadline in the format mm-dd-yyyy h:m aa where h-hours, m-minutes, aa-AM or PM: ");
         String deadline = input.next();
-        selected.setDeadline(deadline);
+        try {
+            selected.setDeadline(deadline);
+        } catch (ParseException e) {
+            System.out.println("Wrong format");
+            return;
+        }
         strDate = selected.getDeadline().toString();
         System.out.println("The deadline set: " + strDate);
     }
@@ -130,8 +138,7 @@ public class ApplicationManager {
         System.out.print("Enter the category for the application: ");
         String category = input.next();
         selected.setCategory(category);
-        System.out.println("The category set: ");
-        selected.getCategory();
+        System.out.println("The category set: " + selected.getCategory());
     }
 
     // EFFECTS: prompts user to select application and returns it

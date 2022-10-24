@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 // Represents a required document
 // This class will have a method which would allow the user to upload and read files from their computers.
-// That method will be implemented using JFileChooser API but for now there is only a basic functionality
+// That method will be implemented using JFileChooser API but for now there is only basic functionality
 // where the user has to manually type in the full path to a file
 // Sources:
 //    File I/O documentation: https://docs.oracle.com/javase/tutorial/essential/io/index.html
@@ -27,18 +27,6 @@ public class Requirement {
         this.name = name;
         status = false;
         uploadedDocument = null;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public File getUploadedDocument() {
-        return uploadedDocument;
     }
 
     // MODIFIES: this
@@ -68,14 +56,25 @@ public class Requirement {
     }
 
     // REQUIRES: there is an uploaded file
-    // EFFECTS: opens the uploaded document using the associated application
-    public void openUploadedDocument() {
+    // EFFECTS: opens the uploaded document using the associated application and returns true
+    public boolean openUploadedDocument() throws IOException {
         if (uploadedDocument != null) {
-            try {
-                Desktop.getDesktop().open(uploadedDocument);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            Desktop.getDesktop().open(uploadedDocument);
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public File getUploadedDocument() {
+        return uploadedDocument;
     }
 }

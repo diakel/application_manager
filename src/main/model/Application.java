@@ -1,5 +1,8 @@
 package model;
 
+import exceptions.AlreadyExistsException;
+import exceptions.RequirementAlreadyExistsException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,32 +30,12 @@ public class Application {
         requiredDocuments = new ArrayList<Requirement>();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public int getProgress() {
-        return progress;
-    }
-
     // REQUIRES: the date must be entered in the format mm-dd-yyyy hh:mm aa where hh-hours, mm - minutes, aa - AM or PMM
     // MODIFIES: this
     // EFFECTS: sets and returns the deadline for the application
-    public void setDeadline(String deadline) {
+    public void setDeadline(String deadline) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
-        try {
-            this.deadline = dateFormat.parse(deadline);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Date getDeadline() {
-        return deadline;
+        this.deadline = dateFormat.parse(deadline);
     }
 
     // MODIFIES: this
@@ -61,13 +44,14 @@ public class Application {
         category = categoryName;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
     // MODIFIES: this
     // EFFECTS: adds a new requirement to the list of required documents for the application
-    public void addRequirement(Requirement requirement) {
+    public void addRequirement(Requirement requirement) throws AlreadyExistsException {
+        for (Requirement req : requiredDocuments) {
+            if (req.getName() == requirement.getName()) {
+                throw new RequirementAlreadyExistsException();
+            }
+        }
         requiredDocuments.add(requirement);
         trackStatusAndProgress();
     }
@@ -77,10 +61,6 @@ public class Application {
     public void removeRequirement(Requirement requirement) {
         requiredDocuments.remove(requirement);
         trackStatusAndProgress();
-    }
-
-    public List<Requirement> getRequiredDocuments() {
-        return requiredDocuments;
     }
 
     // MODIFIES: this
@@ -103,5 +83,27 @@ public class Application {
         }
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public Date getDeadline() {
+        return deadline;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public List<Requirement> getRequiredDocuments() {
+        return requiredDocuments;
+    }
 }

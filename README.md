@@ -27,7 +27,7 @@ for them would be useful.</p>
 For now, 4 user stories that will be available in the console (outside of console, much more is implemented and tested):
 As a user, I want to be able to:
 - Choose a deadline for an application
-- Choose or create a category for an application
+- Create a category for an application
 - Add a required document to an application
 - Remove a required document
 

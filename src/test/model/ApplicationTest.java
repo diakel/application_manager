@@ -1,8 +1,10 @@
 package model;
 
+import exceptions.AlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -41,8 +43,22 @@ public class ApplicationTest {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         Date testDate = cal.getTime();
-        testApplication.setDeadline("11-09-2022 11:59 AM");
+        try {
+            testApplication.setDeadline("11-09-2022 11:59 AM");
+        } catch (ParseException e) {
+            fail();
+        }
         assertEquals(testDate, testApplication.getDeadline());
+    }
+
+    @Test
+    void testSetDeadlineWrong() {
+        try {
+            testApplication.setDeadline("11-09-2022");
+            fail();
+        } catch (ParseException e) {
+            // To be expected
+        }
     }
 
     @Test
@@ -53,24 +69,58 @@ public class ApplicationTest {
 
     @Test
     void testAddRequirement() {
-        testApplication.addRequirement(testRequirement1);
+        try {
+            testApplication.addRequirement(testRequirement1);
+        } catch (AlreadyExistsException e){
+            fail();
+        }
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement1));
     }
 
     @Test
     void testAddMultipleRequirements() {
-        testApplication.addRequirement(testRequirement2);
-        testApplication.addRequirement(testRequirement1);
-        testApplication.addRequirement(testRequirement3);
+        try {
+            testApplication.addRequirement(testRequirement2);
+            testApplication.addRequirement(testRequirement1);
+            testApplication.addRequirement(testRequirement3);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement2));
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement3));
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement1));
     }
 
     @Test
+    void testAddRequirementAlreadyExists() {
+        try {
+            testApplication.addRequirement(testRequirement1);
+            testApplication.addRequirement(testRequirement1);
+            fail();
+        } catch (AlreadyExistsException e) {
+            // Works as expected
+        }
+
+        try {
+            testApplication.addRequirement(testRequirement1);
+            testApplication.addRequirement(testRequirement2);
+            testApplication.addRequirement(testRequirement3);
+            testApplication.addRequirement(testRequirement1);
+            fail();
+        } catch (AlreadyExistsException e) {
+            // Works as expected
+        }
+
+    }
+
+    @Test
     void testRemoveRequirement() {
-        testApplication.addRequirement(testRequirement1);
-        testApplication.addRequirement(testRequirement2);
+        try {
+            testApplication.addRequirement(testRequirement1);
+            testApplication.addRequirement(testRequirement2);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         testApplication.removeRequirement(testRequirement1);
         assertFalse(testApplication.getRequiredDocuments().contains(testRequirement1));
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement2));
@@ -81,17 +131,29 @@ public class ApplicationTest {
     @Test
     void testTrackStatusAndProgress() {
         testRequirement1.changeStatus(true);
-        testApplication.addRequirement(testRequirement1);
+        try {
+            testApplication.addRequirement(testRequirement1);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         testApplication.trackStatusAndProgress();
         assertTrue(testApplication.getStatus());
         assertEquals(100, testApplication.getProgress());
 
-        testApplication.addRequirement(testRequirement2);
+        try {
+            testApplication.addRequirement(testRequirement2);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         testApplication.trackStatusAndProgress();
         assertFalse(testApplication.getStatus());
         assertEquals(50, testApplication.getProgress());
 
-        testApplication.addRequirement(testRequirement3);
+        try {
+            testApplication.addRequirement(testRequirement3);
+        } catch (AlreadyExistsException e) {
+            fail();
+        }
         testApplication.trackStatusAndProgress();
         assertFalse(testApplication.getStatus());
         assertEquals(33, testApplication.getProgress());
