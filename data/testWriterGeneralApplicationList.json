@@ -1,0 +1,29 @@
+{"applications": [
+    {
+        "name": "BCIT",
+        "progress": 100,
+        "required documents": [
+            {
+                "uploaded document": "./data/testFile",
+                "name": "Some document",
+                "status": true
+            },
+            {
+                "uploaded document": "",
+                "name": "Another document",
+                "status": true
+            }
+        ],
+        "category": "College",
+        "deadline": "Sun Oct 01 11:00:00 PDT 2023",
+        "status": true
+    },
+    {
+        "name": "UBC",
+        "progress": 0,
+        "required documents": [],
+        "category": "University",
+        "deadline": "",
+        "status": false
+    }
+]}

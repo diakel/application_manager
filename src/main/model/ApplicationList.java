@@ -1,6 +1,9 @@
 package model;
 
 import exceptions.ApplicationAlreadyExistsException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +14,7 @@ import java.util.List;
 // Sources:
 //     Sorting by dates - https://stackoverflow.com/a/5927408
 
-public class ApplicationList {
+public class ApplicationList implements Writable {
     private List<Application> applicationList;  // list of the applications
 
     // EFFECTS: constructs an empty list of applications
@@ -75,5 +78,23 @@ public class ApplicationList {
 
     public List<Application> getApplicationList() {
         return applicationList;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("applications", applicationsToJson());
+        return json;
+    }
+
+    // EFFECTS: returns applications in this list as a JSON array
+    private JSONArray applicationsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Application app : applicationList) {
+            jsonArray.put(app.toJson());
+        }
+
+        return jsonArray;
     }
 }

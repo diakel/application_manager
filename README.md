@@ -26,9 +26,17 @@ for them would be useful.</p>
 
 For now, 4 user stories that will be available in the console (outside of console, much more is implemented and tested):
 As a user, I want to be able to:
+- Add an application to my list of applications
+- Remove an application from my list
 - Choose a deadline for an application
+- Sort all application by their deadlines
 - Create a category for an application
+- Filter applications by their categories
 - Add a required document to an application
 - Remove a required document
+- Upload a document for an application
+- Open a document for an application
+- Save my application list (with all the underlying requirements, files, etc.) to a file
+- Load my application list (with all the structure intact) from a file
 
   

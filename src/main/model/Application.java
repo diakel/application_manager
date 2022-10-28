@@ -2,6 +2,9 @@ package model;
 
 import exceptions.AlreadyExistsException;
 import exceptions.RequirementAlreadyExistsException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,7 +16,7 @@ import java.util.List;
 // Sources:
 //     Parsing String to extract a date - https://stackoverflow.com/a/27580870
 
-public class Application {
+public class Application implements Writable {
     private String name;                                // application's name
     private Date deadline;                              // the deadline of the application
     private String category;                            // the category of the application
@@ -28,6 +31,7 @@ public class Application {
         status = false;
         progress = 0;
         requiredDocuments = new ArrayList<Requirement>();
+        category = "";
     }
 
     // REQUIRES: the date must be entered in the format mm-dd-yyyy hh:mm aa where hh-hours, mm - minutes, aa - AM or PMM
@@ -83,6 +87,18 @@ public class Application {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets the status of the application
+    public void setStatus(Boolean newStatus) {
+        this.status = newStatus;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets the progress of the application
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
     public String getName() {
         return name;
     }
@@ -105,5 +121,36 @@ public class Application {
 
     public List<Requirement> getRequiredDocuments() {
         return requiredDocuments;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        if (category == null) {
+            json.put("category", "");
+        } else {
+            json.put("category", category);
+        }
+        json.put("status", status);
+        json.put("progress", progress);
+        if (deadline == null) {
+            json.put("deadline", "");
+        } else {
+            json.put("deadline", deadline.toString());
+        }
+        json.put("required documents", requirementsToJson());
+        return json;
+    }
+
+    // EFFECTS: returns requirements in this list as a JSON array
+    private JSONArray requirementsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Requirement req : requiredDocuments) {
+            jsonArray.put(req.toJson());
+        }
+
+        return jsonArray;
     }
 }

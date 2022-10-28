@@ -159,4 +159,20 @@ public class ApplicationTest {
         assertEquals(33, testApplication.getProgress());
     }
 
+    @Test
+    void testSetStatus() {
+        testApplication.setStatus(true);
+        assertTrue(testApplication.getStatus());
+        testApplication.setStatus(false);
+        assertFalse(testApplication.getStatus());
+    }
+
+    @Test
+    void testSetProgress() {
+        testApplication.setProgress(80);
+        assertEquals(80, testApplication.getProgress());
+        testApplication.setProgress(11);
+        assertEquals(11, testApplication.getProgress());
+    }
+
 }

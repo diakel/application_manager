@@ -1,0 +1,42 @@
+{
+    "applications": [
+        {
+            "name": "SciencePo",
+            "category": "Grad",
+            "status" : false,
+            "progress": 50,
+            "deadline": "11-11-2022 11:59 PM",
+            "required documents": [
+              {
+                "name": "Transcript",
+                "status": false,
+                "uploaded document": "./data/testFile"
+              },
+              {
+                "name": "Essay",
+                "status": true,
+                "uploaded document": "./data/testFile2"
+              }
+            ]
+        },
+        {
+            "name": "EU",
+            "category": "Job",
+            "status" : true,
+            "progress": 100,
+            "deadline": "01-11-2022 11:59 PM",
+            "required documents": [
+             {
+                "name": "References",
+                "status": true,
+                "uploaded document": ""
+             },
+             {
+                "name": "CV",
+                "status": true,
+                "uploaded document": "./data/testFile2"
+             }
+            ]
+        }
+    ]
+}

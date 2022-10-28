@@ -1,6 +1,9 @@
 package model;
 
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +20,7 @@ import java.nio.file.Paths;
 //    Opening files: https://stackoverflow.com/a/2547004
 //                   https://docs.oracle.com/javase/7/docs/api/java/awt/Desktop.html
 
-public class Requirement {
+public class Requirement implements Writable {
     private String name;             // name of the required document
     private Boolean status;          // status of the requirement: True - fulfilled, False - not
     private File uploadedDocument;   // keeps the document that the user might upload
@@ -76,5 +79,18 @@ public class Requirement {
 
     public File getUploadedDocument() {
         return uploadedDocument;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("status", status);
+        if (uploadedDocument == null) {
+            json.put("uploaded document", "");
+        } else {
+            json.put("uploaded document", uploadedDocument);
+        }
+        return json;
     }
 }

@@ -1,0 +1,18 @@
+{"applications": [
+    {
+        "name": "Government",
+        "progress": 0,
+        "required documents": [],
+        "category": "job",
+        "deadline": "Wed Jan 12 23:59:00 PST 2022",
+        "status": false
+    },
+    {
+        "name": "Start-up",
+        "progress": 0,
+        "required documents": [],
+        "category": "private",
+        "deadline": "",
+        "status": false
+    }
+]}

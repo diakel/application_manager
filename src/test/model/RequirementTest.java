@@ -39,11 +39,11 @@ public class RequirementTest {
     void testUploadDocument() {
         assertNull(testRequirement.getUploadedDocument());
 
-        Path testFile = Paths.get("./src/test/testFile");
+        Path testFile = Paths.get("./data/testFile");
         testRequirement.uploadDocument(testFile.toString());
         assertEquals(testFile.toFile(), testRequirement.getUploadedDocument());
 
-        Path testFile2 = Paths.get("./src/test/testFile2");
+        Path testFile2 = Paths.get("./data/testFile2");
         testRequirement.uploadDocument(testFile2.toString());
         assertEquals(testFile2.toFile(), testRequirement.getUploadedDocument());
     }
@@ -56,7 +56,7 @@ public class RequirementTest {
 
     @Test
     void testOpenUploadedDocument() {
-        Path testFile = Paths.get("./src/test/testFile");
+        Path testFile = Paths.get("./data/testFile");
         testRequirement.uploadDocument(testFile.toString());
         try {
             assertTrue(testRequirement.openUploadedDocument());
@@ -76,7 +76,7 @@ public class RequirementTest {
 
     @Test
     void testDeleteUploadedDocument() {
-        Path testFile = Paths.get("./src/test/testFile");
+        Path testFile = Paths.get("./data/testFile");
         testRequirement.uploadDocument(testFile.toString());
         assertEquals(testFile.toFile(), testRequirement.getUploadedDocument());
         testRequirement.deleteUploadedDocument();
