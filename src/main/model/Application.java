@@ -23,6 +23,7 @@ public class Application implements Writable {
     private List<Requirement> requiredDocuments;        // the list of the required documents for the application
     private int progress;                               // tracks the progress on the application (in percentages)
     private boolean status;                             // the status of the application: True is completed, False - not
+    private String strDeadline = "";
 
     // REQUIRES: name can't have been used before
     // EFFECTS: constructs an application with a name, status == false, progress == 0 and no required documents
@@ -39,7 +40,10 @@ public class Application implements Writable {
     // EFFECTS: sets and returns the deadline for the application
     public void setDeadline(String deadline) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
-        this.deadline = dateFormat.parse(deadline);
+        if (!(deadline.isEmpty())) {
+            this.deadline = dateFormat.parse(deadline);
+        }
+        strDeadline = deadline;
     }
 
     // MODIFIES: this
@@ -123,6 +127,10 @@ public class Application implements Writable {
         return requiredDocuments;
     }
 
+    public String getStrDeadline() {
+        return strDeadline;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
@@ -134,11 +142,7 @@ public class Application implements Writable {
         }
         json.put("status", status);
         json.put("progress", progress);
-        if (deadline == null) {
-            json.put("deadline", "");
-        } else {
-            json.put("deadline", deadline.toString());
-        }
+        json.put("deadline", strDeadline);
         json.put("required documents", requirementsToJson());
         return json;
     }

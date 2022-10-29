@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +44,7 @@ class JsonReaderTest {
     }
 
     @Test
-    void testReaderGeneralApplicationList() {
+    void testReaderGeneralApplicationList() throws ParseException {
         JsonReader reader = new JsonReader("./data/testReaderGeneralApplicationList.json");
         try {
             ApplicationList appList = reader.read();
@@ -53,15 +55,8 @@ class JsonReaderTest {
             assertFalse(applications.get(0).getStatus());
             assertEquals(50, applications.get(0).getProgress());
 
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, 2022);
-            cal.set(Calendar.MONTH, 10);
-            cal.set(Calendar.DAY_OF_MONTH, 11);
-            cal.set(Calendar.HOUR_OF_DAY, 23);
-            cal.set(Calendar.MINUTE, 59);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            Date testDeadline = cal.getTime();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
+            Date testDeadline = dateFormat.parse("11-11-2022 11:59 PM");
             assertEquals(testDeadline, applications.get(0).getDeadline());
 
             List<Requirement> testRequirements = applications.get(0).getRequiredDocuments();

@@ -1,17 +1,37 @@
 {"applications": [
     {
-        "name": "Government",
+        "name": "SchengenVisa",
         "progress": 0,
-        "required documents": [],
-        "category": "job",
-        "deadline": "Wed Jan 12 23:59:00 PST 2022",
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Passport",
+                "status": false
+            },
+            {
+                "uploaded document": "/Users/el/Desktop/VaccineProof.pdf",
+                "name": "Insurance",
+                "status": false
+            },
+            {
+                "uploaded document": "/Users/el/Desktop/Istanbul_flight.pdf",
+                "name": "FlightTicket",
+                "status": false
+            }
+        ],
+        "category": "",
+        "deadline": "01-01-2023 10:00 AM",
         "status": false
     },
     {
-        "name": "Start-up",
+        "name": "WorkPermit",
         "progress": 0,
-        "required documents": [],
-        "category": "private",
+        "required documents": [{
+            "uploaded document": "",
+            "name": "SIN",
+            "status": false
+        }],
+        "category": "Canada",
         "deadline": "",
         "status": false
     }

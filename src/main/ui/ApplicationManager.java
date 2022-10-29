@@ -57,32 +57,33 @@ public class ApplicationManager {
     // EFFECTS: processes user command
     @SuppressWarnings("methodlength")
     private void processCommand(String command) {
-        if (command.equals("a")) {
-            addApplication();
-        } else if (command.equals("r")) {
-            removeApplication();
-        } else if (command.equals("ar")) {
-            addRequirement();
-        } else if (command.equals("rr")) {
-            removeRequirement();
-        } else if (command.equals("ad")) {
-            addDocument();
-        } else if (command.equals("o")) {
-            openDocument();
-        } else if (command.equals("d")) {
-            setDeadline();
-        } else if (command.equals("c")) {
-            setCategory();
-        } else if (command.equals("s")) {
-            sortByDeadlines();
-        } else if (command.equals("f")) {
-            filterByCategory();
-        } else if (command.equals("save")) {
-            saveApplicationList();
-        } else if (command.equals("load")) {
-            loadApplicationList();
-        } else {
-            System.out.println("Selection not valid...");
+        switch (command) {
+            case "a": addApplication();
+                break;
+            case "r": removeApplication();
+                break;
+            case "ar": addRequirement();
+                break;
+            case "rr": removeRequirement();
+                break;
+            case "ad": addDocument();
+                break;
+            case "o": openDocument();
+                break;
+            case "d": setDeadline();
+                break;
+            case "c": setCategory();
+                break;
+            case "s": sortByDeadlines();
+                break;
+            case "f": filterByCategory();
+                break;
+            case "save": saveApplicationList();
+                break;
+            case "load": loadApplicationList();
+                break;
+            default: System.out.println("Selection not valid...");
+                break;
         }
     }
 

@@ -60,22 +60,13 @@ class JsonWriterTest {
             testReq1.uploadDocument("./data/testFile");
             Requirement testReq2 = new Requirement("Another document");
             testReq2.changeStatus(true);
-            try {
-                testApp1.addRequirement(testReq1);
-                testApp1.addRequirement(testReq2);
-            } catch (AlreadyExistsException e) {
-                System.out.println("Requirement already exists");
-            }
+            testApp1.addRequirement(testReq1);
+            testApp1.addRequirement(testReq2);
             Application testApp2 = new Application("UBC");
-            testApp2.setCategory("University");
             testApp2.setStatus(false);
 
-            try {
-                appList.addApplication(testApp1);
-                appList.addApplication(testApp2);
-            } catch (AlreadyExistsException e) {
-                System.out.println("Application already exists");
-            }
+            appList.addApplication(testApp1);
+            appList.addApplication(testApp2);
 
             JsonWriter writer = new JsonWriter("./data/testWriterGeneralApplicationList.json");
             writer.open();

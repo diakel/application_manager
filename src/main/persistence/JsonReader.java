@@ -64,7 +64,6 @@ public class JsonReader {
 
     // MODIFIES: appList
     // EFFECTS: parses application from JSON object and adds it to workroom
-    @SuppressWarnings("methodlength")
     private void addApplication(ApplicationList appList, JSONObject jsonObject) {
         String name = jsonObject.getString("name");
         Boolean status = jsonObject.getBoolean("status");
@@ -85,11 +84,7 @@ public class JsonReader {
             JSONObject nextReq = (JSONObject) json;
             addRequirement(application, nextReq);
         }
-        try {
-            appList.addApplication(application);
-        } catch (ApplicationAlreadyExistsException e) {
-            System.out.println("Application with such name already exists");
-        }
+        appList.addApplication(application);
     }
 
     // MODIFIES: application

@@ -15,14 +15,14 @@
             }
         ],
         "category": "College",
-        "deadline": "Sun Oct 01 11:00:00 PDT 2023",
+        "deadline": "10-01-2023 11:00 AM",
         "status": true
     },
     {
         "name": "UBC",
         "progress": 0,
         "required documents": [],
-        "category": "University",
+        "category": "",
         "deadline": "",
         "status": false
     }
