@@ -2,8 +2,6 @@ package ui;
 
 import exceptions.AlreadyExistsException;
 import exceptions.ApplicationAlreadyExistsException;
-import exceptions.ApplicationListEmptyException;
-import exceptions.RequirementListEmptyException;
 import model.Application;
 import model.ApplicationList;
 import model.Requirement;
@@ -148,12 +146,7 @@ public class ApplicationManager {
     // EFFECTS: adds a requirement to the chosen application
     private void addRequirement() {
         Application selected = null;
-        try {
-            selected = selectApplication();
-        } catch (ApplicationListEmptyException e) {
-            System.out.println("The list of applications is empty");
-            return;
-        }
+        selected = selectApplication();
         System.out.print("Enter the name of the new requirement: ");
         String name = input.next();
         Requirement newRequirement = new Requirement(name);
@@ -170,12 +163,7 @@ public class ApplicationManager {
     // EFFECTS: removes a requirement from the chosen application
     private void removeRequirement() {
         Application selected = null;
-        try {
-            selected = selectApplication();
-        } catch (ApplicationListEmptyException e) {
-            System.out.println("The list of applications is empty");
-            return;
-        }
+        selected = selectApplication();
         System.out.print("Enter the name of the requirement to be removed: ");
         String name = input.next();
 
@@ -194,19 +182,9 @@ public class ApplicationManager {
     // EFFECTS: uploads a document to the requirement
     private void addDocument() {
         Application selected = null;
-        try {
-            selected = selectApplication();
-        } catch (ApplicationListEmptyException e) {
-            System.out.println("The list of applications is empty");
-            return;
-        }
+        selected = selectApplication();
         Requirement selectedReq = null;
-        try {
-            selectedReq = selectRequirement(selected);
-        } catch (RequirementListEmptyException e) {
-            System.out.println("No requirements for this application");
-            return;
-        }
+        selectedReq = selectRequirement(selected);
         System.out.println("Type in the path to the document you want to upload");
         String path = input.next();
         if (selectedReq.uploadDocument(path)) {
@@ -219,19 +197,9 @@ public class ApplicationManager {
     // EFFECTS: opens a document for the requirement
     private void openDocument() {
         Application selected = null;
-        try {
-            selected = selectApplication();
-        } catch (ApplicationListEmptyException e) {
-            System.out.println("The list of applications is empty");
-            return;
-        }
+        selected = selectApplication();
         Requirement selectedReq = null;
-        try {
-            selectedReq = selectRequirement(selected);
-        } catch (RequirementListEmptyException e) {
-            System.out.println("No requirements for this application");
-            return;
-        }
+        selectedReq = selectRequirement(selected);
         try {
             selectedReq.openUploadedDocument();
         } catch (IOException e) {
@@ -243,19 +211,9 @@ public class ApplicationManager {
     // EFFECTS: "deletes" the document for a requirement
     private void removeDocument() {
         Application selected = null;
-        try {
-            selected = selectApplication();
-        } catch (ApplicationListEmptyException e) {
-            System.out.println("The list of applications is empty");
-            return;
-        }
+        selected = selectApplication();
         Requirement selectedReq = null;
-        try {
-            selectedReq = selectRequirement(selected);
-        } catch (RequirementListEmptyException e) {
-            System.out.println("No requirements for this application");
-            return;
-        }
+        selectedReq = selectRequirement(selected);
         selectedReq.deleteUploadedDocument();
         System.out.println("The document removed successfully");
     }
@@ -265,12 +223,7 @@ public class ApplicationManager {
     private void setDeadline() {
         String strDate;
         Application selected = null;
-        try {
-            selected = selectApplication();
-        } catch (ApplicationListEmptyException e) {
-            System.out.println("The list of applications is empty");
-            return;
-        }
+        selected = selectApplication();
         System.out.print("Enter the deadline in the format mm-dd-yyyy h:m aa where h-hours, m-minutes, aa-AM or PM: ");
         String deadline = input.next();
         try {
@@ -287,12 +240,7 @@ public class ApplicationManager {
     // EFFECTS: set the category for the application
     private void setCategory() {
         Application selected = null;
-        try {
-            selected = selectApplication();
-        } catch (ApplicationListEmptyException e) {
-            System.out.println("The list of applications is empty");
-            return;
-        }
+        selected = selectApplication();
         System.out.print("Enter the category for the application: ");
         String category = input.next();
         selected.setCategory(category);
@@ -321,9 +269,10 @@ public class ApplicationManager {
     }
 
     // EFFECTS: prompts user to type in the name of the application and returns it
-    private Application selectApplication() throws ApplicationListEmptyException {
+    private Application selectApplication() {
         if (appList.getApplicationList().isEmpty()) {
-            throw new ApplicationListEmptyException();
+            System.out.println("No applications have been added yet");
+            return null;
         } else {
             String selection = "";  // force entry into loop
 
@@ -338,9 +287,10 @@ public class ApplicationManager {
     }
 
     // EFFECTS: prompts user to type in the name of the requirement and returns it
-    private Requirement selectRequirement(Application app) throws RequirementListEmptyException {
+    private Requirement selectRequirement(Application app) {
         if (app.getRequiredDocuments().isEmpty()) {
-            throw new RequirementListEmptyException();
+            System.out.println("No requirements have been added yet");
+            return null;
         } else {
             List<String> requirementNames = new ArrayList<String>();
             app.getRequiredDocuments().forEach(req -> {
