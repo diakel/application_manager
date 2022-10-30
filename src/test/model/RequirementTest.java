@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,7 +58,7 @@ public class RequirementTest {
     @Test
     void testOpenUploadedDocument() {
         Path testFile = Paths.get("./data/testFile");
-        testRequirement.uploadDocument(testFile.toString());
+        assertTrue(testRequirement.uploadDocument(testFile.toString()));
         try {
             assertTrue(testRequirement.openUploadedDocument());
         } catch (IOException e) {

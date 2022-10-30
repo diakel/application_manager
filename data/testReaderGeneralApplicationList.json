@@ -24,7 +24,7 @@
             "category": "Job",
             "status" : true,
             "progress": 100,
-            "deadline": "01-11-2022 11:59 PM",
+            "deadline": "",
             "required documents": [
              {
                 "name": "References",

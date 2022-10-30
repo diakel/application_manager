@@ -71,6 +71,7 @@ class JsonReaderTest {
             assertEquals("Job", applications.get(1).getCategory());
             assertTrue(applications.get(1).getStatus());
             assertEquals(100, applications.get(1).getProgress());
+            assertEquals("", applications.get(1).getStrDeadline());
             List<Requirement> testRequirements2 = applications.get(1).getRequiredDocuments();
             assertNull(testRequirements2.get(0).getUploadedDocument());
         } catch (IOException e) {

@@ -96,10 +96,6 @@ public class JsonReader {
         Requirement requirement = new Requirement(name);
         requirement.changeStatus(status);
         requirement.uploadDocument(document);
-        try {
-            app.addRequirement(requirement);
-        } catch (AlreadyExistsException e) {
-            System.out.println("Requirement with such name already exists");
-        }
+        app.addRequirement(requirement);
     }
 }

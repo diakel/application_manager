@@ -83,7 +83,6 @@ public class ApplicationManager {
             case "load": loadApplicationList();
                 break;
             default: System.out.println("Selection not valid...");
-                break;
         }
     }
 
