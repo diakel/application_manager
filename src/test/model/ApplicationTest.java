@@ -34,6 +34,7 @@ public class ApplicationTest {
 
     @Test
     void testSetDeadline() {
+        assertEquals("", testApplication.getStrDeadline());
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2022);
         cal.set(Calendar.MONTH, 10);
@@ -49,6 +50,7 @@ public class ApplicationTest {
             fail();
         }
         assertEquals(testDate, testApplication.getDeadline());
+        assertEquals("11-09-2022 11:59 AM", testApplication.getStrDeadline());
     }
 
     @Test

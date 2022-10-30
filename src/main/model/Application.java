@@ -135,11 +135,7 @@ public class Application implements Writable {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("name", name);
-        if (category == null) {
-            json.put("category", "");
-        } else {
-            json.put("category", category);
-        }
+        json.put("category", category);
         json.put("status", status);
         json.put("progress", progress);
         json.put("deadline", strDeadline);

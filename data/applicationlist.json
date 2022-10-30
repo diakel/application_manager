@@ -1,38 +1,18 @@
 {"applications": [
     {
-        "name": "SchengenVisa",
+        "name": "Google",
         "progress": 0,
-        "required documents": [
-            {
-                "uploaded document": "",
-                "name": "Passport",
-                "status": false
-            },
-            {
-                "uploaded document": "/Users/el/Desktop/VaccineProof.pdf",
-                "name": "Insurance",
-                "status": false
-            },
-            {
-                "uploaded document": "/Users/el/Desktop/Istanbul_flight.pdf",
-                "name": "FlightTicket",
-                "status": false
-            }
-        ],
-        "category": "",
-        "deadline": "01-01-2023 10:00 AM",
+        "required documents": [],
+        "category": "Work",
+        "deadline": "10-10-2022 11:19 AM",
         "status": false
     },
     {
-        "name": "WorkPermit",
+        "name": "UBC",
         "progress": 0,
-        "required documents": [{
-            "uploaded document": "",
-            "name": "SIN",
-            "status": false
-        }],
-        "category": "Canada",
-        "deadline": "",
+        "required documents": [],
+        "category": "Grad",
+        "deadline": "01-01-2025 11:00 AM",
         "status": false
     }
 ]}
