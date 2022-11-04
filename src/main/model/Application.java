@@ -25,7 +25,6 @@ public class Application implements Writable {
     private boolean status;                             // the status of the application: True is completed, False - not
     private String strDeadline = "";
 
-    // REQUIRES: name can't have been used before
     // EFFECTS: constructs an application with a name, status == false, progress == 0 and no required documents
     public Application(String name) {
         this.name = name;
@@ -35,9 +34,9 @@ public class Application implements Writable {
         category = "";
     }
 
-    // REQUIRES: the date must be entered in the format mm-dd-yyyy hh:mm aa where hh-hours, mm - minutes, aa - AM or PMM
     // MODIFIES: this
-    // EFFECTS: sets and returns the deadline for the application
+    // EFFECTS: sets and returns the deadline for the application, throws an exception if the date entered is not in the
+    // "mm-dd-yyyy hh:mm aa" format where hh-hours, mm - minutes, aa - AM or PM
     public void setDeadline(String deadline) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
         if (!(deadline.isEmpty())) {

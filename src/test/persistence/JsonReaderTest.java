@@ -49,16 +49,16 @@ class JsonReaderTest {
         try {
             ApplicationList appList = reader.read();
             List<Application> applications = appList.getApplicationList();
+            // tests for SciencePo application
             assertEquals(2, applications.size());
             assertEquals("SciencePo", applications.get(0).getName());
             assertEquals("Grad", applications.get(0).getCategory());
             assertFalse(applications.get(0).getStatus());
             assertEquals(50, applications.get(0).getProgress());
-
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
             Date testDeadline = dateFormat.parse("11-11-2022 11:59 PM");
             assertEquals(testDeadline, applications.get(0).getDeadline());
-
+            // tests for requirements in the SciencePo application
             List<Requirement> testRequirements = applications.get(0).getRequiredDocuments();
             assertEquals("Transcript", testRequirements.get(0).getName());
             assertEquals("Essay", testRequirements.get(1).getName());
@@ -66,12 +66,13 @@ class JsonReaderTest {
             assertEquals(testFile.toFile(), testRequirements.get(0).getUploadedDocument());
             Path testFile2 = Paths.get("./data/testFile2");
             assertEquals(testFile2.toFile(), testRequirements.get(1).getUploadedDocument());
-
+            // tests for EU application
             assertEquals("EU", applications.get(1).getName());
             assertEquals("Job", applications.get(1).getCategory());
             assertTrue(applications.get(1).getStatus());
             assertEquals(100, applications.get(1).getProgress());
             assertEquals("", applications.get(1).getStrDeadline());
+            assertNull(applications.get(1).getDeadline());
             List<Requirement> testRequirements2 = applications.get(1).getRequiredDocuments();
             assertNull(testRequirements2.get(0).getUploadedDocument());
         } catch (IOException e) {

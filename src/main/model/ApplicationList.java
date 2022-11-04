@@ -22,9 +22,8 @@ public class ApplicationList implements Writable {
         applicationList = new ArrayList<Application>();
     }
 
-    // EFFECTS: application with the same name is not already in the application list
     // MODIFIES: this
-    // EFFECTS: adds a new application to the list
+    // EFFECTS: adds a new application to the list, throws exception if an app with the same name is already in the list
     public void addApplication(Application application) throws ApplicationAlreadyExistsException {
         for (Application app : applicationList) {
             if (app.getName() == application.getName()) {
