@@ -41,8 +41,8 @@ public class Application implements Writable {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
         if (!(deadline.isEmpty())) {
             this.deadline = dateFormat.parse(deadline);
+            strDeadline = deadline;
         }
-        strDeadline = deadline;
     }
 
     // MODIFIES: this

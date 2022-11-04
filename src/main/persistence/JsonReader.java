@@ -76,7 +76,7 @@ public class JsonReader {
         try {
             application.setDeadline(deadline);
         } catch (ParseException e) {
-            System.out.println("Problem parsing application deadline");
+            //System.out.println("Problem parsing application deadline");
         }
         application.setStatus(status);
         application.setProgress(progress);
