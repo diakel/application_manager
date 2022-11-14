@@ -39,16 +39,18 @@ public class ApplicationList implements Writable {
         applicationList.remove(app);
     }
 
-    // REQUIRES: at least two applications with deadlines in the list of applications
-    // MODIFIES: this
-    // EFFECTS: sorts applications in the list by their deadlines from the earliest date to the latest
-    public void sortByDeadlines() {
-        Collections.sort(applicationList, (app1, app2) -> {
+    // REQUIRES: all applications in the list must have deadlines
+    // EFFECTS: returns a sorted by their deadlines list of applications from the earliest date to the latest
+    public List<Application> sortByDeadlines() {
+        List<Application> sortedList = new ArrayList<>();
+        sortedList = getApplicationList();
+        Collections.sort(sortedList, (app1, app2) -> {
             if (app1.getDeadline() == null || app2.getDeadline() == null) {
                 return 0;
             }
             return app1.getDeadline().compareTo(app2.getDeadline());
         });
+        return sortedList;
     }
 
     // REQUIRES: non-empty list of applications

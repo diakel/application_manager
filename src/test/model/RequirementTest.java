@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.OpenedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -60,9 +61,11 @@ public class RequirementTest {
         Path testFile = Paths.get("./data/testFile");
         assertTrue(testRequirement.uploadDocument(testFile.toString()));
         try {
-            assertTrue(testRequirement.openUploadedDocument());
+            testRequirement.openUploadedDocument();
         } catch (IOException e) {
             fail();
+        } catch (OpenedException e) {
+            // expected
         }
     }
 
@@ -71,6 +74,8 @@ public class RequirementTest {
         try {
             assertFalse(testRequirement.openUploadedDocument());
         } catch (IOException e) {
+            fail();
+        } catch (OpenedException e) {
             fail();
         }
     }

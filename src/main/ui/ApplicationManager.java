@@ -2,6 +2,7 @@ package ui;
 
 import exceptions.AlreadyExistsException;
 import exceptions.ApplicationAlreadyExistsException;
+import exceptions.OpenedException;
 import model.Application;
 import model.ApplicationList;
 import model.Requirement;
@@ -204,6 +205,8 @@ public class ApplicationManager {
             selectedReq.openUploadedDocument();
         } catch (IOException e) {
             System.out.println("Problem opening the document");
+        } catch (OpenedException e) {
+            System.out.println("File successfully opened");
         }
     }
 
@@ -251,6 +254,7 @@ public class ApplicationManager {
     // EFFECTS: sorts applications by their deadlines
     private void sortByDeadlines() {
         appList.sortByDeadlines();
+        printAllApplications();
     }
 
     // EFFECTS: returns all applications in the given category

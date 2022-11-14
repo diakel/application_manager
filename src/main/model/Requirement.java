@@ -1,6 +1,7 @@
 package model;
 
 
+import exceptions.OpenedException;
 import org.json.JSONObject;
 import persistence.Writable;
 
@@ -60,10 +61,10 @@ public class Requirement implements Writable {
 
     // EFFECTS: opens the uploaded document using the associated application and returns true,
     // returns false if there is no uploaded file
-    public boolean openUploadedDocument() throws IOException {
+    public boolean openUploadedDocument() throws IOException, OpenedException {
         if (uploadedDocument != null) {
             Desktop.getDesktop().open(uploadedDocument);
-            return true;
+            throw new OpenedException();  // throws exception for easier testing
         } else {
             return false;
         }
