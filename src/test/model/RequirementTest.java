@@ -57,7 +57,7 @@ public class RequirementTest {
     @Test
     void testOpenUploadedDocument() {
         Path testFile = Paths.get("./data/testFile");
-        assertTrue(testRequirement.uploadDocument(testFile.toString()));
+        testRequirement.uploadDocument(testFile.toString());
         try {
             testRequirement.openUploadedDocument(); // opens the file
         } catch (IOException e) {
@@ -68,9 +68,11 @@ public class RequirementTest {
     @Test
     void testNullOpenUploadedDocument() {
         try {
-            testRequirement.openUploadedDocument(); // shouldn't do anything
+            testRequirement.openUploadedDocument();
         } catch (IOException e) {
             fail();
+        } catch (NullPointerException e) {
+            // expected
         }
     }
 

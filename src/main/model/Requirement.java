@@ -61,9 +61,7 @@ public class Requirement implements Writable {
     // EFFECTS: opens the uploaded document using the associated application and returns true,
     // returns false if there is no uploaded file
     public void openUploadedDocument() throws IOException {
-        if (uploadedDocument != null) {
-            Desktop.getDesktop().open(uploadedDocument);
-        }
+        Desktop.getDesktop().open(uploadedDocument);
     }
 
     public String getName() {
