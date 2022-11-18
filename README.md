@@ -39,4 +39,9 @@ As a user, I want to be able to:
 - Save my application list (with all the underlying requirements, files, etc.) to a file
 - Load my application list (with all the structure intact) from a file
 
-  
+  ### Instructions for Grader
+- You can generate the first required event by typing in the name of the new application and pressing "Add Application" button
+- You can generate the second required event by typing in the name of the requirement for the selected application and pressing "Add Requirement"
+- You can locate my visual component by...
+- You can save the state of my application by pressing menu -> save
+- You can reload the state of my application by pressing menu -> load
