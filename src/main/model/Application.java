@@ -131,6 +131,11 @@ public class Application implements Writable {
     }
 
     @Override
+    public String toString() {
+        return this.getName();
+    }
+
+    @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("name", name);
@@ -146,7 +151,7 @@ public class Application implements Writable {
     private JSONArray requirementsToJson() {
         JSONArray jsonArray = new JSONArray();
 
-        for (Requirement req : requiredDocuments) {
+        for (Requirement req : this.requiredDocuments) {
             jsonArray.put(req.toJson());
         }
 

@@ -1,18 +1,43 @@
 {"applications": [
     {
-        "name": "Google",
+        "name": "MIT",
         "progress": 0,
-        "required documents": [],
-        "category": "Work",
-        "deadline": "10-10-2022 11:19 AM",
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Publication",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "References",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "Projects",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "Experience",
+                "status": false
+            }
+        ],
+        "category": "",
+        "deadline": "",
         "status": false
     },
     {
-        "name": "UBC",
+        "name": "CanadianVisa",
         "progress": 0,
-        "required documents": [],
-        "category": "Grad",
-        "deadline": "01-01-2025 11:00 AM",
+        "required documents": [{
+            "uploaded document": "",
+            "name": "Study Permit",
+            "status": false
+        }],
+        "category": "",
+        "deadline": "",
         "status": false
     }
 ]}

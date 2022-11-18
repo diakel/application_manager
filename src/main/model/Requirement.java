@@ -77,6 +77,11 @@ public class Requirement implements Writable {
     }
 
     @Override
+    public String toString() {
+        return this.getName();
+    }
+
+    @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("name", name);
