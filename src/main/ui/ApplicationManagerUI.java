@@ -42,10 +42,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 import javax.swing.*;
-import javax.swing.event.*;
 
+// Code sources: - https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html - menus + MenuDemo app
+//               - https://stackoverflow.com/a/6578266 - event handling
+//               - https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html - Dialog windows
+//               - https://docs.oracle.com/javase/tutorial/uiswing/components/splitpane.html - split panes
+//                             + SplitPaneDemo2Project, SplitPaneDividerDemoProject
 public class ApplicationManagerUI extends JPanel {
     private JSplitPane splitPane;
     JComponent applicationListPane;

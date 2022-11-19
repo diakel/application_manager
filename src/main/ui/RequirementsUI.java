@@ -40,34 +40,32 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.sql.SQLOutput;
 
+// Class for the list of requirements pane (on the right )for the selected application (on the left)
+// Code sources:   - https://www.geeksforgeeks.org/java-swing-jprogressbar/ - progress bar
+//                 - https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html#popup - popup menu (+ PopupMenuDemo)
+//                 - https://stackoverflow.com/a/6007967 - popup menu for JList
+//                 + code sources in the ApplicationListUI class
 public class RequirementsUI extends JPanel
                       implements ListSelectionListener {
     private JList list;
     private DefaultListModel listModel;
     private Application selectedApplication;
 
+    JProgressBar progressBar;
     private static final String addString = "Add requirement";
     private static final String removeString = "Remove requirement";
     private JButton removeButton;
     private JTextField requirementName;
 
-    @SuppressWarnings("methodlength")
+    private PopupMenu popup;
+
     public RequirementsUI(Application selectedApp) {
         super(new BorderLayout());
         selectedApplication = selectedApp;
-        if (selectedApplication.getRequiredDocuments().isEmpty()) {
-            Requirement sampleRequirement = new Requirement("Sample Requirement");
-            selectedApplication.addRequirement(sampleRequirement);
-        }
-
-        listModel = new DefaultListModel();
-        // Checkbox?
-        for (int i = 0; i < selectedApplication.getRequiredDocuments().size(); i++) {
-            listModel.addElement(selectedApplication.getRequiredDocuments().get(i));
-        }
+        setupRequirements();
 
         JScrollPane listScrollPane = getJScrollPane();
 
@@ -84,17 +82,49 @@ public class RequirementsUI extends JPanel
         requirementName = new JTextField(10);
         requirementName.addActionListener(addListener);
         requirementName.getDocument().addDocumentListener(addListener);
-      //  String name = listModel.getElementAt(list.getSelectedIndex()).toString();
 
-        JPanel completionBar = new JPanel();
+        JPanel completionPanel = getCompletionPanel();
+
+        // Popup Menu
+        popup = new PopupMenu();
+        popup.createPopupMenu();
 
         JPanel buttonPane = getButtonPane(addButton);
 
-        add(completionBar, BorderLayout.PAGE_START);
+        add(completionPanel, BorderLayout.PAGE_START);
         add(listScrollPane, BorderLayout.CENTER);
         add(buttonPane, BorderLayout.PAGE_END);
     }
 
+    // MODIFIES: listModel
+    // EFFECTS: adds elements to the requirement list based on the selected application
+    private void setupRequirements() {
+        if (selectedApplication.getRequiredDocuments().isEmpty()) {
+            Requirement sampleRequirement = new Requirement("Sample Requirement");
+            selectedApplication.addRequirement(sampleRequirement);
+        }
+
+        listModel = new DefaultListModel();
+        for (int i = 0; i < selectedApplication.getRequiredDocuments().size(); i++) {
+            listModel.addElement(selectedApplication.getRequiredDocuments().get(i));
+        }
+    }
+
+    // EFFECTS: constructs an upper panel with the progress bar
+    private JPanel getCompletionPanel() {
+        // Progress bar
+        JPanel completionPanel = new JPanel();
+        JLabel prLabel = new JLabel("Progress: ");
+        progressBar = new JProgressBar();
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+        completionPanel.add(prLabel);
+        completionPanel.add(progressBar);
+        trackProgress();
+        return completionPanel;
+    }
+
+    // EFFECTS: constructs and returns button pane
     private JPanel getButtonPane(JButton addButton) {
         //Create a panel that uses BoxLayout.
         JPanel buttonPane = new JPanel();
@@ -109,6 +139,7 @@ public class RequirementsUI extends JPanel
         return buttonPane;
     }
 
+    // EFFECTS: construct the list and puts it on the JScrollPane
     private JScrollPane getJScrollPane() {
         //Create the list and put it in a scroll pane.
         list = new JList(listModel);
@@ -120,10 +151,28 @@ public class RequirementsUI extends JPanel
         return listScrollPane;
     }
 
+    // MODIFIES: progressBar
+    // EFFECTS: function to increase progress on the progress bar
+    public void trackProgress() {
+        int numCompleted = 0;
+        for (int i = 0; i < list.getModel().getSize(); i++) {
+            if (((Requirement) (list.getModel().getElementAt(i))).getStatus()) {
+                numCompleted++;
+            }
+        }
+        try {
+            progressBar.setValue((numCompleted * 100) / list.getModel().getSize());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Error with the progress bar");
+        }
+    }
+
     public JList getJList() {
         return list;
     }
 
+    // MODIFIES: selectedApplication
+    // EFFECTS: changes the selected app
     public void changeSelectedApplication(Application app) {
         selectedApplication = app;
     }
@@ -137,6 +186,7 @@ public class RequirementsUI extends JPanel
             Requirement reqToRemove = (Requirement) list.getSelectedValue();
             listModel = (DefaultListModel) list.getModel();
             listModel.remove(index);
+            trackProgress();
             selectedApplication.removeRequirement(reqToRemove);
 
             int size = listModel.getSize();
@@ -186,10 +236,10 @@ public class RequirementsUI extends JPanel
 
             listModel = (DefaultListModel) list.getModel();
             listModel.insertElementAt(new Requirement(requirementName.getText()), index);
+            trackProgress();
             //If we just wanted to add to the end, we'd do this:
             //listModel.addElement(employeeName.getText());
             selectedApplication.addRequirement(new Requirement(requirementName.getText()));
-
 
             //Reset the text field.
             requirementName.requestFocusInWindow();
@@ -200,9 +250,7 @@ public class RequirementsUI extends JPanel
             list.ensureIndexIsVisible(index);
         }
 
-        //This method tests for string equality. You could certainly
-        //get more sophisticated about the algorithm.  For example,
-        //you might want to ignore white space and capitalization.
+        // checks whether a requirement with such name is already in the list
         protected boolean alreadyInList(String name) {
             listModel = (DefaultListModel) list.getModel();
             return listModel.contains(name);
@@ -256,6 +304,62 @@ public class RequirementsUI extends JPanel
         }
     }
 
+    class PopupMenu implements ActionListener, ItemListener {
+
+        public void createPopupMenu() {
+            JCheckBoxMenuItem cbMenuItem;
+            JMenuItem menuItem;
+
+            //Create the popup menu.
+            JPopupMenu popup = new JPopupMenu();
+//            cbMenuItem = new JCheckBoxMenuItem("Completed");
+//            cbMenuItem.addItemListener(this);
+            menuItem = new JMenuItem("Completed");
+            menuItem.addActionListener(this);
+            popup.add(menuItem);
+            //Add listener to the list so the popup menu can come up.
+            MouseListener popupListener = new PopupListener(popup);
+            list.addMouseListener(popupListener);
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            ((Requirement) list.getSelectedValue()).changeStatus(true);
+            selectedApplication.trackStatusAndProgress();
+            trackProgress();
+        }
+
+        // this method is for the future if I want to add checkmarks to the menu
+        public void itemStateChanged(ItemEvent e) {
+            ((Requirement) list.getSelectedValue()).changeStatus(e.getStateChange() == ItemEvent.SELECTED);
+        }
+
+        class PopupListener extends MouseAdapter {
+            JPopupMenu popup;
+
+            PopupListener(JPopupMenu popupMenu) {
+                popup = popupMenu;
+            }
+
+            public void mousePressed(MouseEvent e) {
+                showPopup(e);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    list.setSelectedIndex(list.locationToIndex(e.getPoint())); //select the item
+                    popup.show(list, e.getX(), e.getY()); //and show the menu
+            //        public void run() {
+                   //     MenuSelectionManager.defaultManager().setSelectedPath(new MenuElement[]{popup, cbMenuItem});
+            //        }
+                }
+            }
+        }
+    }
+
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -269,10 +373,8 @@ public class RequirementsUI extends JPanel
         //Create and set up the content pane.
         JComponent newContentPane = new RequirementsUI(new Application("Sample"));
         newContentPane.setOpaque(true); //content panes must be opaque
+
         frame.setContentPane(newContentPane);
-
-        //Add completion bar at the bottom
-
 
         //Display the window.
         frame.pack();

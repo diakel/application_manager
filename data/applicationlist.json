@@ -1,26 +1,33 @@
 {"applications": [
     {
-        "name": "MIT",
+        "name": "Sample Application",
         "progress": 0,
+        "required documents": [{
+            "uploaded document": "",
+            "name": "Sample Requirement",
+            "status": false
+        }],
+        "category": "",
+        "deadline": "",
+        "status": false
+    },
+    {
+        "name": "UBC",
+        "progress": 66,
         "required documents": [
             {
                 "uploaded document": "",
-                "name": "Publication",
-                "status": false
+                "name": "Transcript",
+                "status": true
             },
             {
                 "uploaded document": "",
-                "name": "References",
-                "status": false
+                "name": "Essay",
+                "status": true
             },
             {
                 "uploaded document": "",
-                "name": "Projects",
-                "status": false
-            },
-            {
-                "uploaded document": "",
-                "name": "Experience",
+                "name": "you thin",
                 "status": false
             }
         ],
@@ -29,13 +36,20 @@
         "status": false
     },
     {
-        "name": "CanadianVisa",
-        "progress": 0,
-        "required documents": [{
-            "uploaded document": "",
-            "name": "Study Permit",
-            "status": false
-        }],
+        "name": "SciencePO",
+        "progress": 50,
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "References",
+                "status": true
+            },
+            {
+                "uploaded document": "",
+                "name": "no",
+                "status": false
+            }
+        ],
         "category": "",
         "deadline": "",
         "status": false

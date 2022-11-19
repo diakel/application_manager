@@ -43,7 +43,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/* ApplicationListUI.java requires no other files. */
+// Code sources: - https://docs.oracle.com/javase/tutorial/uiswing/components/list.html#mutable - how to work with lists + ListDemoProject
+//               - https://stackoverflow.com/a/43533541 - adding elements to list model
+//               - https://stackoverflow.com/a/23584594 - changing elements in another list according to actions in this one
+//               - https://stackoverflow.com/a/44419681 - getting all elements of the list
+// represents the list of all applications (on the right)
 public class ApplicationListUI extends JPanel
                       implements ListSelectionListener {
     private JList list;
@@ -56,7 +60,6 @@ public class ApplicationListUI extends JPanel
     private JButton removeButton;
     private JTextField applicationName;
 
- //   @SuppressWarnings("methodlength")
     public ApplicationListUI() {
         super(new BorderLayout());
         applicationList = new ApplicationList();
