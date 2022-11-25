@@ -43,7 +43,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLOutput;
 
-// Class for the list of requirements pane (on the right )for the selected application (on the left)
+// Class for the list of requirements pane (on the right ) for the selected application (on the left)
 // Code sources:   - https://www.geeksforgeeks.org/java-swing-jprogressbar/ - progress bar
 //                 - https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html#popup - popup menu (+ PopupMenuDemo)
 //                 - https://stackoverflow.com/a/6007967 - popup menu for JList
@@ -161,7 +161,11 @@ public class RequirementsUI extends JPanel
             }
         }
         try {
-            progressBar.setValue((numCompleted * 100) / list.getModel().getSize());
+            if (list.getModel().getSize() != 0) {
+                progressBar.setValue((numCompleted * 100) / list.getModel().getSize());
+            } else {
+                progressBar.setValue(0);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,"Error with the progress bar");
         }
@@ -186,8 +190,8 @@ public class RequirementsUI extends JPanel
             Requirement reqToRemove = (Requirement) list.getSelectedValue();
             listModel = (DefaultListModel) list.getModel();
             listModel.remove(index);
-            trackProgress();
             selectedApplication.removeRequirement(reqToRemove);
+            trackProgress();
 
             int size = listModel.getSize();
 
@@ -234,12 +238,13 @@ public class RequirementsUI extends JPanel
                 index++;
             }
 
+            Requirement newRequirement = new Requirement(requirementName.getText());
             listModel = (DefaultListModel) list.getModel();
-            listModel.insertElementAt(new Requirement(requirementName.getText()), index);
+            listModel.insertElementAt(newRequirement, index);
+            selectedApplication.addRequirement(newRequirement);
             trackProgress();
             //If we just wanted to add to the end, we'd do this:
             //listModel.addElement(employeeName.getText());
-            selectedApplication.addRequirement(new Requirement(requirementName.getText()));
 
             //Reset the text field.
             requirementName.requestFocusInWindow();
@@ -324,6 +329,7 @@ public class RequirementsUI extends JPanel
 
         public void actionPerformed(ActionEvent e) {
             ((Requirement) list.getSelectedValue()).changeStatus(true);
+            selectedApplication.getRequirement((Requirement) list.getSelectedValue()).changeStatus(true);
             selectedApplication.trackStatusAndProgress();
             trackProgress();
         }

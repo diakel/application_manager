@@ -5,6 +5,7 @@ import exceptions.RequirementAlreadyExistsException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
+import ui.RequirementsUI;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -124,6 +125,16 @@ public class Application implements Writable {
 
     public List<Requirement> getRequiredDocuments() {
         return requiredDocuments;
+    }
+
+    public Requirement getRequirement(Requirement req) {
+        Requirement reqToReturn = null;
+        for (Requirement requirement : getRequiredDocuments()) {
+            if (requirement == req) {
+                reqToReturn = requirement;
+            }
+        }
+        return reqToReturn;
     }
 
     public String getStrDeadline() {

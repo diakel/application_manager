@@ -145,10 +145,10 @@ public class ApplicationListUI extends JPanel
             //there's a valid selection
             //so go ahead and remove whatever's selected.
             int index = list.getSelectedIndex();
+            Application appToRemove = getSelectedApplication();
             listModel = (DefaultListModel) list.getModel();
             listModel.remove(index);
-//            Application appToRemove = getSelectedApplication();
-//            applicationList.removeApplication(appToRemove);
+            applicationList.removeApplication(appToRemove);
 
             int size = listModel.getSize();
 
@@ -195,11 +195,12 @@ public class ApplicationListUI extends JPanel
                 index++;
             }
 
+            Application newApp = new Application(applicationName.getText());
             listModel = (DefaultListModel) list.getModel();
-            listModel.insertElementAt(new Application(applicationName.getText()), index);
+            listModel.insertElementAt(newApp, index);
             //If we just wanted to add to the end, we'd do this:
             //listModel.addElement(employeeName.getText());
-            applicationList.addApplication(new Application(applicationName.getText()));
+            applicationList.addApplication(newApp);
 
             //Reset the text field.
             applicationName.requestFocusInWindow();
@@ -273,6 +274,7 @@ public class ApplicationListUI extends JPanel
             }
         }
         requirementsList.getJList().setModel(appropriateReqModel);
+        requirementsList.trackProgress();
     }
 
     /**
