@@ -33,7 +33,7 @@ public class ApplicationTest {
     }
 
     @Test
-    void testSetDeadline() {
+    void testSetStringDeadline() {
         assertEquals("", testApplication.getStrDeadline());
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2022);
@@ -45,12 +45,28 @@ public class ApplicationTest {
         cal.set(Calendar.MILLISECOND, 0);
         Date testDate = cal.getTime();
         try {
-            testApplication.setDeadline("11-09-2022 11:59 AM");
+            testApplication.setDeadline("09-11-22 11:59 AM");
         } catch (ParseException e) {
             fail();
         }
         assertEquals(testDate, testApplication.getDeadline());
-        assertEquals("11-09-2022 11:59 AM", testApplication.getStrDeadline());
+        assertEquals("09-11-22 11:59 AM", testApplication.getStrDeadline());
+    }
+
+    @Test
+    void testSetDateDeadline() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2022);
+        cal.set(Calendar.MONTH, 6);
+        cal.set(Calendar.DAY_OF_MONTH, 15);
+        cal.set(Calendar.HOUR_OF_DAY, 11);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date testDate = cal.getTime();
+        testApplication.setDeadline(testDate);
+        assertEquals(testDate, testApplication.getDeadline());
+        assertEquals("15-07-22 11:59 AM", testApplication.getStrDeadline());
     }
 
     @Test

@@ -36,14 +36,21 @@ public class Application implements Writable {
     }
 
     // MODIFIES: this
-    // EFFECTS: sets and returns the deadline for the application, throws an exception if the date entered is not in the
+    // EFFECTS: sets the deadline for the application, throws an exception if the date entered is not in the
     // "mm-dd-yyyy hh:mm aa" format where hh-hours, mm - minutes, aa - AM or PM
     public void setDeadline(String deadline) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm aa");
         if (!(deadline.isEmpty())) {
             this.deadline = dateFormat.parse(deadline);
             strDeadline = deadline;
         }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets the deadline for the application and parses it to String
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+        strDeadline =  new SimpleDateFormat("dd-MM-yy HH:mm aa").format(deadline);
     }
 
     // MODIFIES: this

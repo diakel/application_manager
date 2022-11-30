@@ -33,6 +33,7 @@ package ui;
 
 import model.Application;
 import model.ApplicationList;
+import model.Requirement;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -40,8 +41,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 // Code sources: - https://docs.oracle.com/javase/tutorial/uiswing/components/list.html#mutable - how to work with lists + ListDemoProject
 //               - https://stackoverflow.com/a/43533541 - adding elements to list model
@@ -94,14 +94,17 @@ public class ApplicationListUI extends JPanel
         add(buttonPane, BorderLayout.PAGE_END);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates and returns button pane in the bottom of the pane
     private JPanel getButtonPane(JButton addButton) {
-        //Create a panel that uses BoxLayout.
+        //Create a panel that uses BoxLayout. (no)
         JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+  //      buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+        buttonPane.setLayout(new GridLayout(1, 0));
         buttonPane.add(removeButton);
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-        buttonPane.add(Box.createHorizontalStrut(5));
+ //       buttonPane.add(Box.createHorizontalStrut(5));
+//        buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
+//        buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(applicationName);
         buttonPane.add(addButton);
         buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -115,6 +118,7 @@ public class ApplicationListUI extends JPanel
         list.setSelectedIndex(0);
         list.addListSelectionListener(this);
         list.setVisibleRowCount(5);
+        list.setCellRenderer(new MyListCellRenderer());
         JScrollPane listScrollPane = new JScrollPane(list);
         return listScrollPane;
     }
@@ -140,6 +144,9 @@ public class ApplicationListUI extends JPanel
     }
 
     class RemoveListener implements ActionListener {
+
+        // MODIFIES: this
+        // EFFECTS: removes selected application, sets the index, disables remove button if there is nothing left
         public void actionPerformed(ActionEvent e) {
             //This method can be called only if
             //there's a valid selection
@@ -177,6 +184,8 @@ public class ApplicationListUI extends JPanel
         }
 
         //Required by ActionListener.
+        // MODIFIES: this
+        // EFFECTS: adds a new application in the appropriate place and to the application list
         public void actionPerformed(ActionEvent e) {
             String name = applicationName.getText();
 
@@ -211,9 +220,7 @@ public class ApplicationListUI extends JPanel
             list.ensureIndexIsVisible(index);
         }
 
-        //This method tests for string equality. You could certainly
-        //get more sophisticated about the algorithm.  For example,
-        //you might want to ignore white space and capitalization.
+        // EFFECTS: tests for string equality
         protected boolean alreadyInList(String name) {
             return ((DefaultListModel) list.getModel()).contains(name);
         }
@@ -252,6 +259,7 @@ public class ApplicationListUI extends JPanel
     }
 
     //This method is required by ListSelectionListener.
+    // EFFECTS: sets the appropriate requirements for the selected application, enables/disables remove button
     public void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting() == false) {
 
@@ -275,6 +283,31 @@ public class ApplicationListUI extends JPanel
         }
         requirementsList.getJList().setModel(appropriateReqModel);
         requirementsList.trackProgress();
+    }
+
+    class MyListCellRenderer extends DefaultListCellRenderer implements ListCellRenderer<Object> {
+
+        public MyListCellRenderer() {
+            setOpaque(true);
+        }
+
+        // EFFECTS: highlights completed requirements green
+        public Component getListCellRendererComponent(JList paramList, Object value,
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
+            if (!((Application) value).getStrDeadline().isEmpty()) {
+                setText(value + " " + ((Application) value).getStrDeadline());
+            } else {
+                setText(value.toString());
+            }
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            return this;
+        }
     }
 
     /**

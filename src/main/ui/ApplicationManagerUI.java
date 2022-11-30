@@ -93,6 +93,8 @@ public class ApplicationManagerUI extends JPanel {
 
     private class MenuUI implements ActionListener {
 
+        // MODIFIES: this
+        // EFFECTS: creates a menu bar
         public JMenuBar createMenuBar() {
             JMenuBar menuBar;
             JMenu menu;
@@ -121,6 +123,8 @@ public class ApplicationManagerUI extends JPanel {
             return menuBar;
         }
 
+        // MODIFIES: this
+        // EFFECTS: calls appropriate method depending on the button pressed
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("Save")) {
                 saveApplications();
@@ -130,6 +134,8 @@ public class ApplicationManagerUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: loads application from the json file
     private void loadApplications() {
         try {
             ApplicationList appList = jsonReader.read();
@@ -146,6 +152,8 @@ public class ApplicationManagerUI extends JPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: writes the state of the application to the json file
     private void saveApplications() {
         try {
             jsonWriter.open();

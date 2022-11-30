@@ -1,58 +1,46 @@
 {"applications": [
     {
         "name": "Sample Application",
-        "progress": 100,
-        "required documents": [
-            {
-                "uploaded document": "",
-                "name": "Sample Requirement",
-                "status": true
-            },
-            {
-                "uploaded document": "",
-                "name": "Sample2",
-                "status": true
-            },
-            {
-                "uploaded document": "",
-                "name": "Sample3",
-                "status": true
-            }
-        ],
-        "category": "",
-        "deadline": "",
-        "status": true
-    },
-    {
-        "name": "SciencePo",
-        "progress": 0,
-        "required documents": [],
-        "category": "",
-        "deadline": "",
-        "status": false
-    },
-    {
-        "name": "UBC",
         "progress": 33,
         "required documents": [
             {
                 "uploaded document": "",
-                "name": "Transcript",
+                "name": "Sample Requirement",
                 "status": false
             },
             {
                 "uploaded document": "",
                 "name": "Essay",
-                "status": true
+                "status": false
             },
             {
                 "uploaded document": "",
-                "name": "References",
-                "status": false
+                "name": "Transcri[t",
+                "status": true
             }
         ],
         "category": "",
-        "deadline": "",
+        "deadline": "15-12-22 20:30 PM",
         "status": false
+    },
+    {
+        "name": "UBc",
+        "progress": 0,
+        "required documents": [],
+        "category": "",
+        "deadline": "15-06-24 20:30 PM",
+        "status": false
+    },
+    {
+        "name": "SciencePo",
+        "progress": 100,
+        "required documents": [{
+            "uploaded document": "",
+            "name": "Hello",
+            "status": true
+        }],
+        "category": "",
+        "deadline": "",
+        "status": true
     }
 ]}

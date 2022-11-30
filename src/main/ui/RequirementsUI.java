@@ -35,18 +35,19 @@ import model.Application;
 import model.Requirement;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLOutput;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 // Class for the list of requirements pane (on the right ) for the selected application (on the left)
 // Code sources:   - https://www.geeksforgeeks.org/java-swing-jprogressbar/ - progress bar
 //                 - https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html#popup - popup menu (+ PopupMenuDemo)
 //                 - https://stackoverflow.com/a/6007967 - popup menu for JList
+//                 - https://stackoverflow.com/q/58385949, https://stackoverflow.com/a/1665237 - working with custom cell renderers
 //                 + code sources in the ApplicationListUI class
 public class RequirementsUI extends JPanel
                       implements ListSelectionListener {
@@ -61,6 +62,9 @@ public class RequirementsUI extends JPanel
     private JTextField requirementName;
 
     private PopupMenu popup;
+
+    protected Calendar calendar;
+    protected JSpinner dateSpinner;
 
     public RequirementsUI(Application selectedApp) {
         super(new BorderLayout());
@@ -83,7 +87,7 @@ public class RequirementsUI extends JPanel
         requirementName.addActionListener(addListener);
         requirementName.getDocument().addDocumentListener(addListener);
 
-        JPanel completionPanel = getCompletionPanel();
+        JPanel informationPanel = getCompletionPanel();
 
         // Popup Menu
         popup = new PopupMenu();
@@ -91,7 +95,7 @@ public class RequirementsUI extends JPanel
 
         JPanel buttonPane = getButtonPane(addButton);
 
-        add(completionPanel, BorderLayout.PAGE_START);
+        add(informationPanel, BorderLayout.PAGE_START);
         add(listScrollPane, BorderLayout.CENTER);
         add(buttonPane, BorderLayout.PAGE_END);
     }
@@ -110,29 +114,34 @@ public class RequirementsUI extends JPanel
         }
     }
 
-    // EFFECTS: constructs an upper panel with the progress bar
+    // EFFECTS: constructs an upper panel with the progress bar and deadline setter
     private JPanel getCompletionPanel() {
         // Progress bar
-        JPanel completionPanel = new JPanel();
-        JLabel prLabel = new JLabel("Progress: ");
+        JPanel completionPanel = new JPanel(new GridLayout(0, 1));
+        JLabel dateLabel = new JLabel("You can set the deadline for this application (dd/mm/yy hh:mm): ");
         progressBar = new JProgressBar();
+        progressBar.setString("Progress on the application");
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
-        completionPanel.add(prLabel);
+//        dateLabel.setLabelFor(dateSpinner);
+        SpinnerDate deadlineSpinner = new SpinnerDate();
         completionPanel.add(progressBar);
+        completionPanel.add(dateLabel);
+        completionPanel.add(deadlineSpinner.getDateSpinner());
         trackProgress();
         return completionPanel;
     }
 
     // EFFECTS: constructs and returns button pane
     private JPanel getButtonPane(JButton addButton) {
-        //Create a panel that uses BoxLayout.
+        //Create a panel that uses BoxLayout. (no)
         JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+   //     buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+        buttonPane.setLayout(new GridLayout(1, 0));
         buttonPane.add(removeButton);
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-        buttonPane.add(Box.createHorizontalStrut(5));
+     //   buttonPane.add(Box.createHorizontalStrut(5));
+    //    buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
+     //   buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(requirementName);
         buttonPane.add(addButton);
         buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -147,6 +156,7 @@ public class RequirementsUI extends JPanel
         list.setSelectedIndex(0);
         list.addListSelectionListener(this);
         list.setVisibleRowCount(5);
+        list.setCellRenderer(new MyListCellRenderer());
         JScrollPane listScrollPane = new JScrollPane(list);
         return listScrollPane;
     }
@@ -181,7 +191,48 @@ public class RequirementsUI extends JPanel
         selectedApplication = app;
     }
 
+    public class SpinnerDate extends JPanel
+            implements ChangeListener {
+
+        private void createDateSpinner() {
+            Date today = new Date();
+            SpinnerDateModel dateModel = new SpinnerDateModel(today, null, null, Calendar.MONTH);
+            //           setDeadline(dateModel.getDate());
+
+            dateSpinner = new JSpinner(dateModel);
+            JSpinner.DateEditor editor = new JSpinner.DateEditor(dateSpinner, "dd/MM/yy HH:mm aa");
+            dateSpinner.setEditor(editor);
+        }
+
+        public SpinnerDate() {
+            calendar = Calendar.getInstance();
+            createDateSpinner();
+
+            //Listen for changes on the date spinner.
+            dateSpinner.addChangeListener(this);
+            dateSpinner.setVisible(true);
+        }
+
+        public JSpinner getDateSpinner() {
+            return dateSpinner;
+        }
+
+        public void stateChanged(ChangeEvent e) {
+            SpinnerModel dateModel = dateSpinner.getModel();
+            if (dateModel instanceof SpinnerDateModel) {
+                setDeadline(((SpinnerDateModel) dateModel).getDate());
+            }
+        }
+
+        protected void setDeadline(Date date) {
+            calendar.setTime(date);
+            selectedApplication.setDeadline(date);
+        }
+    }
+
     class RemoveListener implements ActionListener {
+        // MODIFIES: this
+        // EFFECTS: removes selected requirement, selects new index, disables removal if nothing's left
         public void actionPerformed(ActionEvent e) {
             //This method can be called only if
             //there's a valid selection
@@ -220,6 +271,8 @@ public class RequirementsUI extends JPanel
         }
 
         //Required by ActionListener.
+        // MODIFIES: this
+        // EFFECTS: adds a new requirement in the appropriate place in the list
         public void actionPerformed(ActionEvent e) {
             String name = requirementName.getText();
 
@@ -255,7 +308,7 @@ public class RequirementsUI extends JPanel
             list.ensureIndexIsVisible(index);
         }
 
-        // checks whether a requirement with such name is already in the list
+        // EFFECTS: checks whether a requirement with such name is already in the list
         protected boolean alreadyInList(String name) {
             listModel = (DefaultListModel) list.getModel();
             return listModel.contains(name);
@@ -295,6 +348,7 @@ public class RequirementsUI extends JPanel
     }
 
     //This method is required by ListSelectionListener.
+    // EFFECTS: disables/enables buttons depending on whether there is a selection
     public void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting() == false) {
 
@@ -309,17 +363,43 @@ public class RequirementsUI extends JPanel
         }
     }
 
-    class PopupMenu implements ActionListener, ItemListener {
+    class MyListCellRenderer extends DefaultListCellRenderer implements ListCellRenderer<Object> {
 
+        public MyListCellRenderer() {
+            setOpaque(true);
+        }
+
+        // EFFECTS: highlights completed requirements green
+        public Component getListCellRendererComponent(JList paramList, Object value,
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
+            setText(value.toString());
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+            if (((Requirement) value).getStatus()) {
+                setBackground(Color.GREEN);
+            }
+            return this;
+        }
+    }
+
+    class PopupMenu implements ActionListener {
+
+        // MODIFIES: this
+        // EFFECTS: creates a popup menu for a requirement
         public void createPopupMenu() {
-            JCheckBoxMenuItem cbMenuItem;
             JMenuItem menuItem;
 
             //Create the popup menu.
             JPopupMenu popup = new JPopupMenu();
-//            cbMenuItem = new JCheckBoxMenuItem("Completed");
-//            cbMenuItem.addItemListener(this);
             menuItem = new JMenuItem("Completed");
+            menuItem.addActionListener(this);
+            popup.add(menuItem);
+            menuItem = new JMenuItem("Incomplete");
             menuItem.addActionListener(this);
             popup.add(menuItem);
             //Add listener to the list so the popup menu can come up.
@@ -327,16 +407,20 @@ public class RequirementsUI extends JPanel
             list.addMouseListener(popupListener);
         }
 
+        // MODIFIES: this
+        // EFFECTS: changes the status to completed/incomplete depending on the button pressed
         public void actionPerformed(ActionEvent e) {
-            ((Requirement) list.getSelectedValue()).changeStatus(true);
-            selectedApplication.getRequirement((Requirement) list.getSelectedValue()).changeStatus(true);
-            selectedApplication.trackStatusAndProgress();
-            trackProgress();
-        }
-
-        // this method is for the future if I want to add checkmarks to the menu
-        public void itemStateChanged(ItemEvent e) {
-            ((Requirement) list.getSelectedValue()).changeStatus(e.getStateChange() == ItemEvent.SELECTED);
+            if (e.getActionCommand().equals("Completed")) {
+                ((Requirement) list.getSelectedValue()).changeStatus(true);
+                selectedApplication.getRequirement((Requirement) list.getSelectedValue()).changeStatus(true);
+                selectedApplication.trackStatusAndProgress();
+                trackProgress();
+            } else {
+                ((Requirement) list.getSelectedValue()).changeStatus(false);
+                selectedApplication.getRequirement((Requirement) list.getSelectedValue()).changeStatus(false);
+                selectedApplication.trackStatusAndProgress();
+                trackProgress();
+            }
         }
 
         class PopupListener extends MouseAdapter {
@@ -354,13 +438,11 @@ public class RequirementsUI extends JPanel
                 showPopup(e);
             }
 
+            // EFFECTS: shows the menu upon pressing the right button
             private void showPopup(MouseEvent e) {
                 if (e.isPopupTrigger()) {
                     list.setSelectedIndex(list.locationToIndex(e.getPoint())); //select the item
                     popup.show(list, e.getX(), e.getY()); //and show the menu
-            //        public void run() {
-                   //     MenuSelectionManager.defaultManager().setSelectedPath(new MenuElement[]{popup, cbMenuItem});
-            //        }
                 }
             }
         }
