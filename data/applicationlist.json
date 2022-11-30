@@ -1,7 +1,7 @@
 {"applications": [
     {
         "name": "Sample Application",
-        "progress": 33,
+        "progress": 66,
         "required documents": [
             {
                 "uploaded document": "",
@@ -10,37 +10,73 @@
             },
             {
                 "uploaded document": "",
-                "name": "Essay",
-                "status": false
+                "name": "SAmple2",
+                "status": true
             },
             {
                 "uploaded document": "",
-                "name": "Transcri[t",
+                "name": "Sample3",
                 "status": true
             }
         ],
         "category": "",
-        "deadline": "15-12-22 20:30 PM",
+        "deadline": "",
         "status": false
     },
     {
-        "name": "UBc",
+        "name": "UBC2",
         "progress": 0,
         "required documents": [],
         "category": "",
-        "deadline": "15-06-24 20:30 PM",
+        "deadline": "",
         "status": false
     },
     {
-        "name": "SciencePo",
+        "name": "UBC3",
         "progress": 100,
         "required documents": [{
             "uploaded document": "",
-            "name": "Hello",
+            "name": "refs",
             "status": true
         }],
         "category": "",
         "deadline": "",
         "status": true
+    },
+    {
+        "name": "UBC",
+        "progress": 100,
+        "required documents": [{
+            "uploaded document": "",
+            "name": "Essay",
+            "status": true
+        }],
+        "category": "",
+        "deadline": "04-12-22 22:40 PM",
+        "status": true
+    },
+    {
+        "name": "UB",
+        "progress": 0,
+        "required documents": [],
+        "category": "",
+        "deadline": "10-12-22 22:40 PM",
+        "status": false
+    },
+    {
+        "name": "UBCfnowe",
+        "progress": 0,
+        "required documents": [],
+        "category": "",
+        "deadline": "",
+        "status": false
+    },
+    {
+        "name": "UBCbwg",
+        "progress": 0,
+        "required documents": [],
+        "category": "",
+        "deadline": "",
+        "status": false
     }
 ]}

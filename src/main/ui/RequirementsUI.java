@@ -48,6 +48,9 @@ import java.util.Date;
 //                 - https://docs.oracle.com/javase/tutorial/uiswing/components/menu.html#popup - popup menu (+ PopupMenuDemo)
 //                 - https://stackoverflow.com/a/6007967 - popup menu for JList
 //                 - https://stackoverflow.com/q/58385949, https://stackoverflow.com/a/1665237 - working with custom cell renderers
+//                 - https://docs.oracle.com/javase/tutorial/uiswing/components/spinner.html, https://www.tutorialspoint.com/how-to-create-a-date-spinner-in-java -
+//                                                                                               JSpinner code
+//                 - https://stackoverflow.com/a/18705499 - getting dates from JSpinner
 //                 + code sources in the ApplicationListUI class
 public class RequirementsUI extends JPanel
                       implements ListSelectionListener {
@@ -191,14 +194,17 @@ public class RequirementsUI extends JPanel
         selectedApplication = app;
     }
 
+    public void changeSpinnerDate(Date date) {
+        dateSpinner.setValue(date);
+    }
+
     public class SpinnerDate extends JPanel
             implements ChangeListener {
 
         private void createDateSpinner() {
             Date today = new Date();
-            SpinnerDateModel dateModel = new SpinnerDateModel(today, null, null, Calendar.MONTH);
-            //           setDeadline(dateModel.getDate());
-
+            SpinnerDateModel dateModel;
+            dateModel = new SpinnerDateModel(today, null, null, Calendar.MONTH);
             dateSpinner = new JSpinner(dateModel);
             JSpinner.DateEditor editor = new JSpinner.DateEditor(dateSpinner, "dd/MM/yy HH:mm aa");
             dateSpinner.setEditor(editor);

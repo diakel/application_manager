@@ -42,6 +42,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Date;
 
 // Code sources: - https://docs.oracle.com/javase/tutorial/uiswing/components/list.html#mutable - how to work with lists + ListDemoProject
 //               - https://stackoverflow.com/a/43533541 - adding elements to list model
@@ -59,6 +60,11 @@ public class ApplicationListUI extends JPanel
     private static final String removeString = "Remove application";
     private JButton removeButton;
     private JTextField applicationName;
+
+    private JButton searchButton;
+    private JMenu sortMenu;
+    private JTextField searchName;
+    JMenuBar sortMenuBar;
 
     public ApplicationListUI() {
         super(new BorderLayout());
@@ -79,19 +85,67 @@ public class ApplicationListUI extends JPanel
         addButton.addActionListener(addListener);
         addButton.setEnabled(true);
 
-        removeButton = new JButton(removeString);
-        removeButton.setActionCommand(removeString);
-        removeButton.addActionListener(new RemoveListener());
+        createRemoveButton();
 
         applicationName = new JTextField(10);
         applicationName.addActionListener(addListener);
         applicationName.getDocument().addDocumentListener(addListener);
-        String name = listModel.getElementAt(list.getSelectedIndex()).toString();
+
+        JPanel toolPanel = createToolPanel();
 
         JPanel buttonPane = getButtonPane(addButton);
 
         add(listScrollPane, BorderLayout.CENTER);
         add(buttonPane, BorderLayout.PAGE_END);
+        add(toolPanel, BorderLayout.PAGE_START);
+    }
+
+    public void setApplicationList(ApplicationList appList) {
+        applicationList = appList;
+    }
+
+    private void createRemoveButton() {
+        removeButton = new JButton(removeString);
+        removeButton.setActionCommand(removeString);
+        removeButton.addActionListener(new RemoveListener());
+    }
+
+    // EFFECTS: constructs an upper panel with the search and sort functions
+    private JPanel createToolPanel() {
+        JPanel toolPanel = new JPanel(new GridLayout(1, 0));
+        searchButton = new JButton("Search");
+        SearchListener searchListener = new SearchListener(searchButton);
+        searchButton.setActionCommand("Search");
+        searchButton.addActionListener(searchListener);
+
+        searchName = new JTextField(0);
+        searchName.addActionListener(searchListener);
+        searchName.getDocument().addDocumentListener(searchListener);
+
+        sortMenuBar = new JMenuBar();
+        sortMenu = createSortMenu();
+        sortMenuBar.add(sortMenu);
+
+        toolPanel.add(searchName);
+        toolPanel.add(searchButton);
+        toolPanel.add(sortMenuBar);
+
+        return toolPanel;
+    }
+
+    private JMenu createSortMenu() {
+        JMenuItem menuItem;
+        SortListener sortListener = new SortListener();
+        JMenu menu = new JMenu("Sort by");
+        menuItem = new JMenuItem("deadlines");
+        menuItem.addActionListener(sortListener);
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("original order");
+        menuItem.addActionListener(sortListener);
+        menu.add(menuItem);
+
+        return menu;
     }
 
     // MODIFIES: this
@@ -174,7 +228,7 @@ public class ApplicationListUI extends JPanel
         }
     }
 
-    //This listener is shared by the text field and the hire button.
+    //This listener is shared by the text field and the add button.
     class AddListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
@@ -258,6 +312,142 @@ public class ApplicationListUI extends JPanel
         }
     }
 
+    //This listener is shared by the text field and the add button.
+    class SearchListener implements ActionListener, DocumentListener {
+        private boolean alreadyEnabled = false;
+        private JButton button;
+
+        public SearchListener(JButton button) {
+            this.button = button;
+        }
+
+        //Required by ActionListener.
+        // MODIFIES: this
+        // EFFECTS: searches for the application with the given name or category
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals("Search")) {
+                String name = searchName.getText();
+
+                //User didn't type in anything
+                if (name.equals("")) {
+                    Toolkit.getDefaultToolkit().beep();
+                    searchName.requestFocusInWindow();
+                    searchName.selectAll();
+                    return;
+                }
+
+                listModel = (DefaultListModel) list.getModel();
+                filterApplicationList(name);
+                searchButton.setText("Go back");
+                searchButton.setActionCommand("Return");
+            } else {
+                list.setModel(listModel);
+                searchButton.setText("Search");
+                searchButton.setActionCommand("Search");
+            }
+
+            setIndex();
+        }
+
+        private void setIndex() {
+            int index = list.getSelectedIndex(); //get selected index
+            if (index == -1) { //no selection, so insert at beginning
+                index = 0;
+            } else {           //add after the selected item
+                index++;
+            }
+
+            //Reset the text field.
+            searchName.requestFocusInWindow();
+            searchName.setText("");
+
+            //Select the new item and make it visible.
+            list.setSelectedIndex(index);
+            list.ensureIndexIsVisible(index);
+        }
+
+        private void filterApplicationList(String name) {
+            DefaultListModel filteredList = new DefaultListModel();
+            for (Application app : applicationList.getApplicationList()) {
+                if (app.getName().contains(name) || app.getCategory().contains(name)) {
+                    filteredList.addElement(app);
+                }
+            }
+
+            list.setModel(filteredList);
+
+        }
+
+        //Required by DocumentListener.
+        public void insertUpdate(DocumentEvent e) {
+            enableButton();
+        }
+
+        //Required by DocumentListener.
+        public void removeUpdate(DocumentEvent e) {
+            handleEmptyTextField(e);
+        }
+
+        //Required by DocumentListener.
+        public void changedUpdate(DocumentEvent e) {
+            if (!handleEmptyTextField(e)) {
+                enableButton();
+            }
+        }
+
+        private void enableButton() {
+            if (!alreadyEnabled) {
+                button.setEnabled(true);
+            }
+        }
+
+        private boolean handleEmptyTextField(DocumentEvent e) {
+            if (e.getDocument().getLength() <= 0 && button.getActionCommand().equals("Search")) {
+                button.setEnabled(false);
+                alreadyEnabled = false;
+                return true;
+            }
+            return false;
+        }
+    }
+
+    class SortListener implements ActionListener {
+        // MODIFIES: this
+        // EFFECTS: sorts applications by deadlines or returns original order
+        public void actionPerformed(ActionEvent e) {
+            if (e.getActionCommand().equals("deadlines")) {
+                listModel = (DefaultListModel) list.getModel();
+                sortByDeadlines();
+            } else {
+                list.setModel(listModel);
+            }
+
+            int index = list.getSelectedIndex();
+            int size = listModel.getSize();
+            if (size == 0) { //Nobody's left, disable firing.
+                removeButton.setEnabled(false);
+
+            } else { //Select an index.
+                if (index == listModel.getSize()) {
+                    //removed item in last position
+                    index--;
+                }
+
+                list.setSelectedIndex(index);
+                list.ensureIndexIsVisible(index);
+            }
+        }
+
+        // EFFECTS: orders applications by their deadlines
+        private void sortByDeadlines() {
+            DefaultListModel sortedModel = new DefaultListModel();
+            for (Application app : applicationList.sortByDeadlines()) {
+                sortedModel.addElement(app);
+            }
+            list.setModel(sortedModel);
+        }
+    }
+
     //This method is required by ListSelectionListener.
     // EFFECTS: sets the appropriate requirements for the selected application, enables/disables remove button
     public void valueChanged(ListSelectionEvent e) {
@@ -279,6 +469,9 @@ public class ApplicationListUI extends JPanel
                 for (int i = 0; i < getSelectedApplication().getRequiredDocuments().size(); i++) {
                     appropriateReqModel.addElement(getSelectedApplication().getRequiredDocuments().get(i));
                 }
+            }
+            if (getSelectedApplication().getDeadline() != null) {
+                requirementsList.changeSpinnerDate(getSelectedApplication().getDeadline());
             }
         }
         requirementsList.getJList().setModel(appropriateReqModel);

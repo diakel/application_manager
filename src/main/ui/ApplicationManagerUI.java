@@ -67,6 +67,8 @@ public class ApplicationManagerUI extends JPanel {
                 applicationListPane, requirementsPane);
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(500);
+        splitPane.setResizeWeight(0.5D);
+
 
         //Provide minimum sizes for the two components in the split pane.
         Dimension minimumSize = new Dimension(100, 50);
@@ -145,6 +147,7 @@ public class ApplicationManagerUI extends JPanel {
                     loadedApplicationList.addElement(appList.getApplicationList().get(i));
                 }
             }
+            ((ApplicationListUI) applicationListPane).setApplicationList(appList);
             ((ApplicationListUI) applicationListPane).getJList().setModel(loadedApplicationList);
             JOptionPane.showMessageDialog(splitPane, "Loaded the application list" + " from " + JSON_STORE);
         } catch (IOException fe) {
