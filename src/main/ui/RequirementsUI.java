@@ -38,6 +38,8 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,6 +53,7 @@ import java.util.Date;
 //                 - https://docs.oracle.com/javase/tutorial/uiswing/components/spinner.html, https://www.tutorialspoint.com/how-to-create-a-date-spinner-in-java -
 //                                                                                               JSpinner code
 //                 - https://stackoverflow.com/a/18705499 - getting dates from JSpinner
+//                 - https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html - working with JFileChooser
 //                 + code sources in the ApplicationListUI class
 public class RequirementsUI extends JPanel
                       implements ListSelectionListener {
@@ -63,11 +66,14 @@ public class RequirementsUI extends JPanel
     private static final String removeString = "Remove requirement";
     private JButton removeButton;
     private JTextField requirementName;
+    private JTextField categoryName;
 
     private PopupMenu popup;
 
     protected Calendar calendar;
     protected JSpinner dateSpinner;
+
+    final JFileChooser fc = new JFileChooser();
 
     public RequirementsUI(Application selectedApp) {
         super(new BorderLayout());
@@ -117,7 +123,7 @@ public class RequirementsUI extends JPanel
         }
     }
 
-    // EFFECTS: constructs an upper panel with the progress bar and deadline setter
+    // EFFECTS: constructs an upper panel with the progress bar, deadline and category setter
     private JPanel getCompletionPanel() {
         // Progress bar
         JPanel completionPanel = new JPanel(new GridLayout(0, 1));
@@ -126,13 +132,45 @@ public class RequirementsUI extends JPanel
         progressBar.setString("Progress on the application");
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
-//        dateLabel.setLabelFor(dateSpinner);
+
         SpinnerDate deadlineSpinner = new SpinnerDate();
+
+        JPanel categoryPanel = createCategoryPanel();
+
         completionPanel.add(progressBar);
         completionPanel.add(dateLabel);
         completionPanel.add(deadlineSpinner.getDateSpinner());
+        completionPanel.add(categoryPanel);
+
         trackProgress();
         return completionPanel;
+    }
+
+    // EFFECTS: creates a JPanel with a text field and a button to set the category for the application
+    private JPanel createCategoryPanel() {
+        JButton categoryButton = new JButton("Set category");
+        CategoryListener categoryListener = new CategoryListener(categoryButton);
+        categoryButton.setActionCommand("Set");
+        categoryButton.addActionListener(categoryListener);
+        categoryButton.setEnabled(true);
+        categoryName = new JTextField(10);
+        categoryName.addActionListener(categoryListener);
+        categoryName.getDocument().addDocumentListener(categoryListener);
+
+        setCategoryTextField();
+
+        JPanel categoryPanel = new JPanel(new GridLayout(1, 0));
+        categoryPanel.add(categoryName);
+        categoryPanel.add(categoryButton);
+        return categoryPanel;
+    }
+
+    public void setCategoryTextField() {
+        if (!selectedApplication.getCategory().isEmpty()) {
+            categoryName.setText(selectedApplication.getCategory());
+        } else {
+            categoryName.setText("");
+        }
     }
 
     // EFFECTS: constructs and returns button pane
@@ -194,6 +232,8 @@ public class RequirementsUI extends JPanel
         selectedApplication = app;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets the given value for the deadline spinner
     public void changeSpinnerDate(Date date) {
         dateSpinner.setValue(date);
     }
@@ -353,6 +393,88 @@ public class RequirementsUI extends JPanel
         }
     }
 
+    //This listener is shared by the text field and the set category button in the info panel
+    class CategoryListener implements ActionListener, DocumentListener {
+        private boolean alreadyEnabled = false;
+        private JButton button;
+
+        public CategoryListener(JButton button) {
+            this.button = button;
+        }
+
+        //Required by ActionListener.
+        // MODIFIES: this
+        // EFFECTS: sets or deletes the category for the selected application
+        public void actionPerformed(ActionEvent e) {
+            String name = categoryName.getText();
+
+            /*//User didn't type in anything
+            if (name.equals("")) {
+                Toolkit.getDefaultToolkit().beep();
+                categoryName.requestFocusInWindow();
+                categoryName.selectAll();
+                return;
+            }*/
+
+            selectedApplication.setCategory(name);
+
+            if (e.getSource() == categoryName) {
+                button.doClick();
+            }
+
+       //     setIndex();
+        }
+
+        private void setIndex() {
+            int index = list.getSelectedIndex(); //get selected index
+            if (index == -1) { //no selection, so insert at beginning
+                index = 0;
+            } else {           //add after the selected item
+                index++;
+            }
+
+            //Reset the text field.
+            categoryName.requestFocusInWindow();
+       //     categoryName.setText("");
+
+            //Select the new item and make it visible.
+            list.setSelectedIndex(index);
+            list.ensureIndexIsVisible(index);
+        }
+
+        //Required by DocumentListener.
+        public void insertUpdate(DocumentEvent e) {
+            enableButton();
+        }
+
+        //Required by DocumentListener.
+        public void removeUpdate(DocumentEvent e) {
+            handleEmptyTextField(e);
+        }
+
+        //Required by DocumentListener.
+        public void changedUpdate(DocumentEvent e) {
+            if (!handleEmptyTextField(e)) {
+                enableButton();
+            }
+        }
+
+        private void enableButton() {
+            if (!alreadyEnabled) {
+                button.setEnabled(true);
+            }
+        }
+
+        private boolean handleEmptyTextField(DocumentEvent e) {
+            if (e.getDocument().getLength() <= 0) {
+                button.setEnabled(false);
+                alreadyEnabled = false;
+                return true;
+            }
+            return false;
+        }
+    }
+
     //This method is required by ListSelectionListener.
     // EFFECTS: disables/enables buttons depending on whether there is a selection
     public void valueChanged(ListSelectionEvent e) {
@@ -389,6 +511,9 @@ public class RequirementsUI extends JPanel
             if (((Requirement) value).getStatus()) {
                 setBackground(Color.GREEN);
             }
+            if (((Requirement) value).getUploadedDocument() != null) {
+                setText(value + " | file: " + ((Requirement) value).getUploadedDocument().getName());
+            }
             return this;
         }
     }
@@ -408,24 +533,61 @@ public class RequirementsUI extends JPanel
             menuItem = new JMenuItem("Incomplete");
             menuItem.addActionListener(this);
             popup.add(menuItem);
+            menuItem = new JMenuItem("Upload file");
+            menuItem.addActionListener(this);
+            popup.add(menuItem);
+            menuItem = new JMenuItem("Open file");
+            menuItem.addActionListener(this);
+            popup.add(menuItem);
+            menuItem = new JMenuItem("Delete file");
+            menuItem.addActionListener(this);
+            popup.add(menuItem);
             //Add listener to the list so the popup menu can come up.
             MouseListener popupListener = new PopupListener(popup);
             list.addMouseListener(popupListener);
         }
 
         // MODIFIES: this
-        // EFFECTS: changes the status to completed/incomplete depending on the button pressed
+        // EFFECTS: does action depending on the button pressed by the user
         public void actionPerformed(ActionEvent e) {
-            if (e.getActionCommand().equals("Completed")) {
-                ((Requirement) list.getSelectedValue()).changeStatus(true);
-                selectedApplication.getRequirement((Requirement) list.getSelectedValue()).changeStatus(true);
-                selectedApplication.trackStatusAndProgress();
-                trackProgress();
-            } else {
-                ((Requirement) list.getSelectedValue()).changeStatus(false);
-                selectedApplication.getRequirement((Requirement) list.getSelectedValue()).changeStatus(false);
-                selectedApplication.trackStatusAndProgress();
-                trackProgress();
+            switch (e.getActionCommand()) {
+                case "Completed": case "Incomplete":
+                    ((Requirement) list.getSelectedValue()).changeStatus(e.getActionCommand().equals("Completed"));
+                    selectedApplication.getRequirement((Requirement)
+                            list.getSelectedValue()).changeStatus(e.getActionCommand().equals("Completed"));
+                    selectedApplication.trackStatusAndProgress();
+                    trackProgress();
+                    break;
+                case "Upload file":
+                    chooseAndUploadFile();
+                    break;
+                case "Open file":
+                    openFile();
+                    break;
+                case "Delete file":
+                    ((Requirement) list.getSelectedValue()).deleteUploadedDocument();
+                    break;
+            }
+        }
+
+        // EFFECTS: opens a file using appropriate desktop application
+        private void openFile() {
+            if (((Requirement) list.getSelectedValue()).getUploadedDocument() != null) {
+                try {
+                    ((Requirement) list.getSelectedValue()).openUploadedDocument();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Can't open the file :(");
+                }
+            }
+        }
+
+        // MODIFIES: this
+        // EFFECTS: opens a file chooser dialog and uploads it to the requirement
+        private void chooseAndUploadFile() {
+            int returnVal = fc.showOpenDialog(null);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                ((Requirement) list.getSelectedValue()).uploadDocument(file.getPath());
             }
         }
 

@@ -87,8 +87,8 @@ public class ApplicationListTest {
 
     @Test
     void testSortByDeadlines(){
-        testApplicationList.sortByDeadlines();
-        assertTrue(testApplicationList.getApplicationList().isEmpty());
+        List<Application> testSortedList = testApplicationList.sortByDeadlines();
+        assertTrue(testSortedList.isEmpty());
 
         // No deadlines set yet
         try {
@@ -98,33 +98,33 @@ public class ApplicationListTest {
         } catch (AlreadyExistsException e) {
             fail();
         }
-        testApplicationList.sortByDeadlines();
-        assertEquals(testApplication1, testApplicationList.getApplicationList().get(0));
-        assertEquals(testApplication2, testApplicationList.getApplicationList().get(1));
-        assertEquals(testApplication3, testApplicationList.getApplicationList().get(2));
+        testSortedList = testApplicationList.sortByDeadlines();
+        assertEquals(testApplication1, testSortedList.get(0));
+        assertEquals(testApplication2, testSortedList.get(1));
+        assertEquals(testApplication3, testSortedList.get(2));
 
         // Not all applications have deadlines
         try {
-            testApplication1.setDeadline("04-20-2023 11:59 PM");
-            testApplication3.setDeadline("06-01-2023 12:23 PM");
+            testApplication1.setDeadline("20-04-23 11:59 PM");
+            testApplication3.setDeadline("01-06-23 12:23 PM");
         } catch (ParseException e) {
             fail();
         }
-        testApplicationList.sortByDeadlines();
-        assertEquals(testApplication1, testApplicationList.getApplicationList().get(0));
-        assertEquals(testApplication2, testApplicationList.getApplicationList().get(1));
-        assertEquals(testApplication3, testApplicationList.getApplicationList().get(2));
+        testSortedList = testApplicationList.sortByDeadlines();
+        assertEquals(testApplication1, testSortedList.get(0));
+        assertEquals(testApplication3, testSortedList.get(1));
+        assertEquals(testApplication2, testSortedList.get(2));
 
         // All applications have deadlines to be sorted by
         try {
-            testApplication2.setDeadline("07-25-2023 00:00 AM");
+            testApplication2.setDeadline("25-07-23 00:00 AM");
         } catch (ParseException e) {
             fail();
         }
-        testApplicationList.sortByDeadlines();
-        assertEquals(testApplication1, testApplicationList.getApplicationList().get(0));
-        assertEquals(testApplication3, testApplicationList.getApplicationList().get(1));
-        assertEquals(testApplication2, testApplicationList.getApplicationList().get(2));
+        testSortedList = testApplicationList.sortByDeadlines();
+        assertEquals(testApplication1, testSortedList.get(0));
+        assertEquals(testApplication3, testSortedList.get(1));
+        assertEquals(testApplication2, testSortedList.get(2));
     }
 
     @Test

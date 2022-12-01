@@ -33,7 +33,6 @@ package ui;
 
 import model.Application;
 import model.ApplicationList;
-import model.Requirement;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -42,7 +41,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Date;
+import java.util.*;
+import java.util.List;
 
 // Code sources: - https://docs.oracle.com/javase/tutorial/uiswing/components/list.html#mutable - how to work with lists + ListDemoProject
 //               - https://stackoverflow.com/a/43533541 - adding elements to list model
@@ -61,7 +61,6 @@ public class ApplicationListUI extends JPanel
     private JButton removeButton;
     private JTextField applicationName;
 
-    private JButton searchButton;
     private JMenu sortMenu;
     private JTextField searchName;
     JMenuBar sortMenuBar;
@@ -113,12 +112,13 @@ public class ApplicationListUI extends JPanel
     // EFFECTS: constructs an upper panel with the search and sort functions
     private JPanel createToolPanel() {
         JPanel toolPanel = new JPanel(new GridLayout(1, 0));
-        searchButton = new JButton("Search");
+        JButton searchButton = new JButton("Search");
         SearchListener searchListener = new SearchListener(searchButton);
         searchButton.setActionCommand("Search");
         searchButton.addActionListener(searchListener);
+        searchButton.setEnabled(true);
 
-        searchName = new JTextField(0);
+        searchName = new JTextField(10);
         searchName.addActionListener(searchListener);
         searchName.getDocument().addDocumentListener(searchListener);
 
@@ -133,6 +133,7 @@ public class ApplicationListUI extends JPanel
         return toolPanel;
     }
 
+    // EFFECTS: creates a sort menu with options to sort by deadlines or return the original order
     private JMenu createSortMenu() {
         JMenuItem menuItem;
         SortListener sortListener = new SortListener();
@@ -165,8 +166,8 @@ public class ApplicationListUI extends JPanel
         return buttonPane;
     }
 
+    // EFFECTS: initialized the list and puts it on a new scroll pane
     private JScrollPane getJScrollPane() {
-        //Create the list and put it in a scroll pane.
         list = new JList(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
@@ -228,7 +229,7 @@ public class ApplicationListUI extends JPanel
         }
     }
 
-    //This listener is shared by the text field and the add button.
+    //This listener is shared by the text field and the add button at the bottom of the pane
     class AddListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
@@ -312,7 +313,7 @@ public class ApplicationListUI extends JPanel
         }
     }
 
-    //This listener is shared by the text field and the add button.
+    //This listener is shared by the text field and the search button at the top of the pane
     class SearchListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
@@ -328,22 +329,26 @@ public class ApplicationListUI extends JPanel
             if (e.getActionCommand().equals("Search")) {
                 String name = searchName.getText();
 
-                //User didn't type in anything
+               //User didn't type in anything
                 if (name.equals("")) {
                     Toolkit.getDefaultToolkit().beep();
                     searchName.requestFocusInWindow();
                     searchName.selectAll();
-                    return;
+            //        return;
                 }
 
                 listModel = (DefaultListModel) list.getModel();
                 filterApplicationList(name);
-                searchButton.setText("Go back");
-                searchButton.setActionCommand("Return");
+                button.setText("Go back");
+                button.setActionCommand("Return");
             } else {
                 list.setModel(listModel);
-                searchButton.setText("Search");
-                searchButton.setActionCommand("Search");
+                button.setText("Search");
+                button.setActionCommand("Search");
+            }
+
+            if (e.getSource() == searchName) {
+                button.doClick();
             }
 
             setIndex();
@@ -402,7 +407,7 @@ public class ApplicationListUI extends JPanel
         }
 
         private boolean handleEmptyTextField(DocumentEvent e) {
-            if (e.getDocument().getLength() <= 0 && button.getActionCommand().equals("Search")) {
+            if (e.getDocument().getLength() <= 0  && button.getActionCommand().equals("Search")) {
                 button.setEnabled(false);
                 alreadyEnabled = false;
                 return true;
@@ -416,8 +421,10 @@ public class ApplicationListUI extends JPanel
         // EFFECTS: sorts applications by deadlines or returns original order
         public void actionPerformed(ActionEvent e) {
             if (e.getActionCommand().equals("deadlines")) {
-                listModel = (DefaultListModel) list.getModel();
-                sortByDeadlines();
+                if (!listModelsEqual((DefaultListModel) list.getModel(), sortByDeadlines())) {
+                    listModel = (DefaultListModel) list.getModel();
+                }
+                list.setModel(sortByDeadlines());
             } else {
                 list.setModel(listModel);
             }
@@ -438,13 +445,23 @@ public class ApplicationListUI extends JPanel
             }
         }
 
-        // EFFECTS: orders applications by their deadlines
-        private void sortByDeadlines() {
+        // EFFECTS: returns true if models are completely equal
+        private boolean listModelsEqual(DefaultListModel model1, DefaultListModel model2) {
+            for (int i = 0; i < model1.getSize(); i++) {
+                if (model1.get(i) != model2.get(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // EFFECTS: orders applications by their deadlines and returns a new list
+        private DefaultListModel sortByDeadlines() {
             DefaultListModel sortedModel = new DefaultListModel();
             for (Application app : applicationList.sortByDeadlines()) {
                 sortedModel.addElement(app);
             }
-            list.setModel(sortedModel);
+            return sortedModel;
         }
     }
 
@@ -476,6 +493,7 @@ public class ApplicationListUI extends JPanel
         }
         requirementsList.getJList().setModel(appropriateReqModel);
         requirementsList.trackProgress();
+        requirementsList.setCategoryTextField();
     }
 
     class MyListCellRenderer extends DefaultListCellRenderer implements ListCellRenderer<Object> {
@@ -484,11 +502,11 @@ public class ApplicationListUI extends JPanel
             setOpaque(true);
         }
 
-        // EFFECTS: highlights completed requirements green
+        // EFFECTS: sets appropriate colors when an application is selected, if there is a deadline, adds it to the name
         public Component getListCellRendererComponent(JList paramList, Object value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {
             if (!((Application) value).getStrDeadline().isEmpty()) {
-                setText(value + " " + ((Application) value).getStrDeadline());
+                setText(value + " | " + ((Application) value).getStrDeadline());
             } else {
                 setText(value.toString());
             }

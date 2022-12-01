@@ -42,15 +42,18 @@ public class ApplicationList implements Writable {
     // REQUIRES: all applications in the list must have deadlines
     // EFFECTS: returns a sorted by their deadlines list of applications from the earliest date to the latest
     public List<Application> sortByDeadlines() {
-        List<Application> sortedList = new ArrayList<>();
-        sortedList = getApplicationList();
-        Collections.sort(sortedList, (app1, app2) -> {
-            if (app1.getDeadline() == null || app2.getDeadline() == null) {
-                return 0;
+        List<Application> listToSort = new ArrayList<>();
+        List<Application> appsWithoutDeadlines = new ArrayList<>();
+        for (Application app : getApplicationList()) {
+            if (app.getDeadline() != null) {
+                listToSort.add(app);
+            } else {
+                appsWithoutDeadlines.add(app);
             }
-            return app1.getDeadline().compareTo(app2.getDeadline());
-        });
-        return sortedList;
+        }
+        Collections.sort(listToSort, Comparator.comparing(Application::getDeadline));
+        listToSort.addAll(appsWithoutDeadlines);
+        return listToSort;
     }
 
     // REQUIRES: non-empty list of applications

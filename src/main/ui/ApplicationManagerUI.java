@@ -141,13 +141,13 @@ public class ApplicationManagerUI extends JPanel {
     private void loadApplications() {
         try {
             ApplicationList appList = jsonReader.read();
+            ((ApplicationListUI) applicationListPane).setApplicationList(appList);
             DefaultListModel loadedApplicationList = new DefaultListModel<>();
             if (!appList.getApplicationList().isEmpty()) {
                 for (int i = 0; i < appList.getApplicationList().size(); i++) {
                     loadedApplicationList.addElement(appList.getApplicationList().get(i));
                 }
             }
-            ((ApplicationListUI) applicationListPane).setApplicationList(appList);
             ((ApplicationListUI) applicationListPane).getJList().setModel(loadedApplicationList);
             JOptionPane.showMessageDialog(splitPane, "Loaded the application list" + " from " + JSON_STORE);
         } catch (IOException fe) {

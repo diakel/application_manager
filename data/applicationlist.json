@@ -1,22 +1,41 @@
 {"applications": [
     {
-        "name": "Sample Application",
-        "progress": 66,
+        "name": "SciencePo",
+        "progress": 33,
         "required documents": [
             {
                 "uploaded document": "",
-                "name": "Sample Requirement",
+                "name": "Essay",
                 "status": false
             },
             {
                 "uploaded document": "",
-                "name": "SAmple2",
+                "name": "Transcript",
                 "status": true
             },
             {
                 "uploaded document": "",
-                "name": "Sample3",
-                "status": true
+                "name": "References",
+                "status": false
+            }
+        ],
+        "category": "School",
+        "deadline": "01-12-22 23:59 PM",
+        "status": false
+    },
+    {
+        "name": "SIN",
+        "progress": 0,
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Letter",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "Application",
+                "status": false
             }
         ],
         "category": "",
@@ -24,57 +43,156 @@
         "status": false
     },
     {
-        "name": "UBC2",
-        "progress": 0,
-        "required documents": [],
-        "category": "",
-        "deadline": "",
+        "name": "Google",
+        "progress": 66,
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "CV",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "Transcript",
+                "status": true
+            },
+            {
+                "uploaded document": "",
+                "name": "Cover letter",
+                "status": true
+            }
+        ],
+        "category": "Job",
+        "deadline": "05-01-23 23:59 PM",
         "status": false
-    },
-    {
-        "name": "UBC3",
-        "progress": 100,
-        "required documents": [{
-            "uploaded document": "",
-            "name": "refs",
-            "status": true
-        }],
-        "category": "",
-        "deadline": "",
-        "status": true
     },
     {
         "name": "UBC",
-        "progress": 100,
-        "required documents": [{
-            "uploaded document": "",
-            "name": "Essay",
-            "status": true
-        }],
-        "category": "",
-        "deadline": "04-12-22 22:40 PM",
-        "status": true
-    },
-    {
-        "name": "UB",
         "progress": 0,
-        "required documents": [],
-        "category": "",
-        "deadline": "10-12-22 22:40 PM",
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Motivational letter",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "Publications",
+                "status": false
+            }
+        ],
+        "category": "School",
+        "deadline": "10-01-23 11:00 AM",
         "status": false
     },
     {
-        "name": "UBCfnowe",
+        "name": "Hackathon",
         "progress": 0,
-        "required documents": [],
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Questions",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "Github",
+                "status": false
+            }
+        ],
         "category": "",
         "deadline": "",
         "status": false
     },
     {
-        "name": "UBCbwg",
+        "name": "Microsoft",
+        "progress": 50,
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Projects",
+                "status": true
+            },
+            {
+                "uploaded document": "",
+                "name": "Tech interview",
+                "status": false
+            }
+        ],
+        "category": "Job",
+        "deadline": "10-01-23 11:30 AM",
+        "status": false
+    },
+    {
+        "name": "U of Denver",
+        "progress": 50,
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Portfolio",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "References",
+                "status": true
+            }
+        ],
+        "category": "School",
+        "deadline": "11-01-23 11:30 AM",
+        "status": false
+    },
+    {
+        "name": "Scholarship",
         "progress": 0,
-        "required documents": [],
+        "required documents": [{
+            "uploaded document": "",
+            "name": "Transcript",
+            "status": false
+        }],
+        "category": "",
+        "deadline": "",
+        "status": false
+    },
+    {
+        "name": "WorkPermit",
+        "progress": 100,
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Passport",
+                "status": true
+            },
+            {
+                "uploaded document": "",
+                "name": "SIN",
+                "status": true
+            },
+            {
+                "uploaded document": "",
+                "name": "Letter",
+                "status": true
+            }
+        ],
+        "category": "Visa",
+        "deadline": "",
+        "status": true
+    },
+    {
+        "name": "License",
+        "progress": 0,
+        "required documents": [
+            {
+                "uploaded document": "",
+                "name": "Medical docs",
+                "status": false
+            },
+            {
+                "uploaded document": "",
+                "name": "Exam results",
+                "status": false
+            }
+        ],
         "category": "",
         "deadline": "",
         "status": false
