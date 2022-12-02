@@ -51,12 +51,14 @@ public class Application implements Writable {
     public void setDeadline(Date deadline) {
         this.deadline = deadline;
         strDeadline =  new SimpleDateFormat("dd-MM-yy HH:mm aa").format(deadline);
+        EventLog.getInstance().logEvent(new Event("Set the deadline " + getStrDeadline() + " for " + this.name));
     }
 
     // MODIFIES: this
     // EFFECTS: sets and returns the category of the application
     public void setCategory(String categoryName) {
         category = categoryName;
+        EventLog.getInstance().logEvent(new Event("Set category " + categoryName + " for " + this.name));
     }
 
     // MODIFIES: this
@@ -69,6 +71,7 @@ public class Application implements Writable {
         }
         requiredDocuments.add(requirement);
         trackStatusAndProgress();
+        EventLog.getInstance().logEvent(new Event("Added requirement " + requirement.getName() + " for " + this.name));
     }
 
     // MODIFIES: this
@@ -76,6 +79,8 @@ public class Application implements Writable {
     public void removeRequirement(Requirement requirement) {
         requiredDocuments.remove(requirement);
         trackStatusAndProgress();
+        EventLog.getInstance().logEvent(
+                new Event("Removed requirement " + requirement.getName() + " for " + this.name));
     }
 
     // MODIFIES: this

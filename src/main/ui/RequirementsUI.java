@@ -418,9 +418,9 @@ public class RequirementsUI extends JPanel
 
             selectedApplication.setCategory(name);
 
-            if (e.getSource() == categoryName) {
-                button.doClick();
-            }
+        //    if (e.getSource() == categoryName) {
+        //        button.doClick();
+        //    }
 
        //     setIndex();
         }
@@ -497,7 +497,8 @@ public class RequirementsUI extends JPanel
             setOpaque(true);
         }
 
-        // EFFECTS: highlights completed requirements green
+        // EFFECTS: highlights completed requirements green, adds a file name if there is one uploaded and does
+        // default list rendering
         public Component getListCellRendererComponent(JList paramList, Object value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {
             setText(value.toString());
@@ -553,8 +554,8 @@ public class RequirementsUI extends JPanel
             switch (e.getActionCommand()) {
                 case "Completed": case "Incomplete":
                     ((Requirement) list.getSelectedValue()).changeStatus(e.getActionCommand().equals("Completed"));
-                    selectedApplication.getRequirement((Requirement)
-                            list.getSelectedValue()).changeStatus(e.getActionCommand().equals("Completed"));
+                //    selectedApplication.getRequirement((Requirement)
+                //            list.getSelectedValue()).changeStatus(e.getActionCommand().equals("Completed"));
                     selectedApplication.trackStatusAndProgress();
                     trackProgress();
                     break;

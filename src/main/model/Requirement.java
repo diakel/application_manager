@@ -36,6 +36,11 @@ public class Requirement implements Writable {
     // EFFECTS: change the status of the requirement fulfillment; true - fulfilled, false - not
     public Boolean changeStatus(Boolean newStatus) {
         status = newStatus;
+        if (newStatus) {
+            EventLog.getInstance().logEvent(new Event("Changed status of " + this.name + " to " + "completed"));
+        } else {
+            EventLog.getInstance().logEvent(new Event("Changed status of " + this.name + " to " + "incomplete"));
+        }
         return status;
     }
 
@@ -46,6 +51,8 @@ public class Requirement implements Writable {
         Path file = Paths.get(pathName);
         if (Files.isRegularFile(file) & Files.isReadable(file)) {
             uploadedDocument = new File(pathName);
+            EventLog.getInstance().logEvent(
+                    new Event("Uploaded file " + uploadedDocument.getName() + " for " + this.name));
             return true;
         } else {
             return false;
@@ -55,13 +62,19 @@ public class Requirement implements Writable {
     // MODIFIES: this
     // EFFECTS: deletes the file from the app
     public void deleteUploadedDocument() {
-        uploadedDocument = null;
+        if (uploadedDocument != null) {
+            EventLog.getInstance().logEvent(
+                    new Event("Deleted file " + uploadedDocument.getName() + " for " + this.name));
+            uploadedDocument = null;
+        }
     }
 
     // EFFECTS: opens the uploaded document using the associated application and returns true,
     // returns false if there is no uploaded file
     public void openUploadedDocument() throws IOException {
         Desktop.getDesktop().open(uploadedDocument);
+        EventLog.getInstance().logEvent(
+                new Event("Opened file " + uploadedDocument.getName() + " for " + this.name));
     }
 
     public String getName() {

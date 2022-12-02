@@ -40,9 +40,55 @@ As a user, I want to be able to:
 - Load my application list (with all the structure intact) from a file
 
   ### Instructions for Grader
-Run ApplicationManagerUI
+Run ApplicationManagerUI (don't press enter button if you can help it)
 - You can generate the first required event by typing in the name of the new application and pressing "Add Application" button
 - You can generate the second required event by typing in the name of the requirement for the selected application and pressing "Add Requirement"
 - You can locate my visual component by right-clicking a requirement and pressing "completed" button in the popup menu, the progress bar should change
 - You can save the state of my application by pressing menu -> save
 - You can reload the state of my application by pressing menu -> load
+- You can upload a file to the requirement by pressing the right button and choosing upload file
+- You can open the file (if you uploaded it) by pressing "open file" in the popup menu
+- You can delete the file by pressing "delete file"
+- You can remove application or requirement by selecting it and pressing remove application/requirement
+- You can set the deadline for the selected application in the spinner at the top of the requirements pane.
+- You can set the category by typing it in the text field and pressing "Set category" button
+- You can search by both name and category in the search pane at the top of the applications pane
+- You can sort the applications by deadlines or return to the original order by pressing "Sort by" menu
+
+  ### Phase 4: Task 2
+Thu Dec 01 17:47:55 PST 2022
+Added application: UBC
+
+Thu Dec 01 17:48:27 PST 2022
+Added requirement Transcript for UBC
+
+Thu Dec 01 17:48:36 PST 2022
+Added requirement References for UBC
+
+Thu Dec 01 17:48:42 PST 2022
+Set category Grad schools for UBC
+
+Thu Dec 01 17:49:06 PST 2022
+Set the deadline 10-01-23 23:59 PM for UBC
+
+Thu Dec 01 17:49:16 PST 2022
+Changed status of Transcript to completed
+
+Thu Dec 01 17:49:24 PST 2022
+Uploaded file Unofficial_transcript.pdf for Transcript
+
+Thu Dec 01 17:49:32 PST 2022
+Opened file Unofficial_transcript.pdf for Transcript
+
+Thu Dec 01 17:49:37 PST 2022
+Deleted file Unofficial_transcript.pdf for Transcript
+
+Thu Dec 01 17:49:44 PST 2022
+Changed status of Transcript to incomplete
+
+Thu Dec 01 17:50:03 PST 2022
+Removed requirement References for UBC
+
+Thu Dec 01 17:50:14 PST 2022
+Removed application: UBC
+

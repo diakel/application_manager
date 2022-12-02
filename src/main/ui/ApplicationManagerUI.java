@@ -33,6 +33,8 @@ package ui;
 
 import model.Application;
 import model.ApplicationList;
+import model.Event;
+import model.EventLog;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -48,6 +50,7 @@ import javax.swing.*;
 //               - https://stackoverflow.com/a/6578266 - event handling
 //               - https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html - Dialog windows
 //               - https://docs.oracle.com/javase/tutorial/uiswing/components/splitpane.html - split panes
+//               - https://stackoverflow.com/a/60516801 - printing to console before closing the application
 //                             + SplitPaneDemo2Project, SplitPaneDividerDemoProject
 public class ApplicationManagerUI extends JPanel {
     private JSplitPane splitPane;
@@ -174,10 +177,19 @@ public class ApplicationManagerUI extends JPanel {
      * event-dispatching thread.
      */
     private static void createAndShowGUI() {
-
         //Create and set up the window.
         JFrame frame = new JFrame("Application Manager");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        // EFFECTS: when the user closes the window, print event log to console and then closes the application
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                for (Event next : EventLog.getInstance()) {
+                    System.out.println(next.toString() + "\n");
+                }
+                System.exit(0);
+            }
+        });
         ApplicationManagerUI applicationManagerUI = new ApplicationManagerUI();
         frame.getContentPane().add(applicationManagerUI.getSplitPane());
 

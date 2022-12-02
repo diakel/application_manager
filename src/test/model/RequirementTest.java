@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,6 +20,7 @@ public class RequirementTest {
     @BeforeEach
     void runBefore() {
         testRequirement = new Requirement("Test");
+        EventLog.getInstance().clear();
     }
 
     @Test
@@ -33,6 +36,9 @@ public class RequirementTest {
         assertTrue(testRequirement.getStatus());
         testRequirement.changeStatus(false);
         assertFalse(testRequirement.getStatus());
+
+        testEventLog(1, "Changed status of Test to completed");
+        testEventLog(2, "Changed status of Test to incomplete");
     }
 
     @Test
@@ -46,6 +52,9 @@ public class RequirementTest {
         Path testFile2 = Paths.get("./data/testFile2");
         testRequirement.uploadDocument(testFile2.toString());
         assertEquals(testFile2.toFile(), testRequirement.getUploadedDocument());
+
+        testEventLog(1, "Uploaded file testFile for Test");
+        testEventLog(2, "Uploaded file testFile2 for Test");
     }
 
     @Test
@@ -63,6 +72,7 @@ public class RequirementTest {
         } catch (IOException e) {
             fail();
         }
+        testEventLog(1, "Opened file testFile for Test");
     }
 
     @Test
@@ -83,5 +93,15 @@ public class RequirementTest {
         assertEquals(testFile.toFile(), testRequirement.getUploadedDocument());
         testRequirement.deleteUploadedDocument();
         assertNull(testRequirement.getUploadedDocument());
+        testEventLog(2, "Deleted file testFile for Test");
+    }
+
+    private boolean testEventLog(int index, String logDescription) {
+        List<Event> l = new ArrayList<Event>();
+        EventLog el = EventLog.getInstance();
+        for (Event next : el) {
+            l.add(next);
+        }
+        return l.get(index).getDescription().equals(logDescription);
     }
 }

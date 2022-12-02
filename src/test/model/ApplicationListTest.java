@@ -19,6 +19,7 @@ public class ApplicationListTest {
     @BeforeEach
     void runBefore() {
         testApplicationList = new ApplicationList();
+        EventLog.getInstance().clear();
     }
 
     @Test
@@ -34,6 +35,12 @@ public class ApplicationListTest {
             fail();
         }
         assertTrue(testApplicationList.getApplicationList().contains(testApplication1));
+        List<Event> l = new ArrayList<Event>();
+        EventLog el = EventLog.getInstance();
+        for (Event next : el) {
+            l.add(next);
+        }
+        assertTrue(l.get(1).getDescription().equals("Added application: Test Application 1"));
     }
 
     @Test
@@ -46,6 +53,13 @@ public class ApplicationListTest {
         }
         assertTrue(testApplicationList.getApplicationList().contains(testApplication2));
         assertTrue(testApplicationList.getApplicationList().contains(testApplication3));
+        // Testing EventLog:
+        List<Event> l = new ArrayList<Event>();
+        for (Event next : EventLog.getInstance()) {
+            l.add(next);
+        }
+        assertTrue(l.get(1).getDescription().equals("Added application: Test Application 2"));
+        assertTrue(l.get(2).getDescription().equals("Added application: Test Application 3"));
     }
 
     @Test
@@ -83,6 +97,16 @@ public class ApplicationListTest {
         assertFalse(testApplicationList.getApplicationList().contains(testApplication2));
         testApplicationList.removeApplication(testApplication3);
         assertTrue(testApplicationList.getApplicationList().isEmpty());
+        // Testing EventLog:
+        List<Event> l = new ArrayList<Event>();
+        for (Event next : EventLog.getInstance()) {
+            l.add(next);
+        }
+        assertTrue(l.get(1).getDescription().equals("Removed application: Test Application 1"));
+        assertTrue(l.get(2).getDescription().equals("Added application: Test Application 2"));
+        assertTrue(l.get(3).getDescription().equals("Added application: Test Application 3"));
+        assertTrue(l.get(4).getDescription().equals("Removed application: Test Application 2"));
+        assertTrue(l.get(5).getDescription().equals("Removed application: Test Application 3"));
     }
 
     @Test

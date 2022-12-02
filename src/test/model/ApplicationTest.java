@@ -5,8 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +24,7 @@ public class ApplicationTest {
     @BeforeEach
     void runBefore() {
         testApplication = new Application("Test1");
+        EventLog.getInstance().clear();
     }
 
     @Test
@@ -67,6 +70,8 @@ public class ApplicationTest {
         testApplication.setDeadline(testDate);
         assertEquals(testDate, testApplication.getDeadline());
         assertEquals("15-07-22 11:59 AM", testApplication.getStrDeadline());
+
+        assertTrue(testEventLog(1, "Set the deadline 15-07-22 11:59 AM for Test1"));
     }
 
     @Test
@@ -83,6 +88,8 @@ public class ApplicationTest {
     void testSetCategory() {
         testApplication.setCategory("work");
         assertEquals("work", testApplication.getCategory());
+
+        assertTrue(testEventLog(1, "Set category work for Test1"));
     }
 
     @Test
@@ -93,6 +100,7 @@ public class ApplicationTest {
             fail();
         }
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement1));
+        assertTrue(testEventLog(1, "Added requirement Test Requirement 1 for Test1"));
     }
 
     @Test
@@ -107,6 +115,10 @@ public class ApplicationTest {
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement2));
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement3));
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement1));
+
+        assertTrue(testEventLog(1, "Added requirement Test Requirement 2 for Test1"));
+        assertTrue(testEventLog(2, "Added requirement Test Requirement 1 for Test1"));
+        assertTrue(testEventLog(3, "Added requirement Test Requirement 3 for Test1"));
     }
 
     @Test
@@ -144,6 +156,9 @@ public class ApplicationTest {
         assertTrue(testApplication.getRequiredDocuments().contains(testRequirement2));
         testApplication.removeRequirement(testRequirement2);
         assertFalse(testApplication.getRequiredDocuments().contains(testRequirement2));
+
+        assertTrue(testEventLog(3, "Removed requirement Test Requirement 1 for Test1"));
+        assertTrue(testEventLog(4, "Removed requirement Test Requirement 2 for Test1"));
     }
 
     @Test
@@ -193,4 +208,12 @@ public class ApplicationTest {
         assertEquals(11, testApplication.getProgress());
     }
 
+    private boolean testEventLog(int index, String logDescription) {
+        List<Event> l = new ArrayList<Event>();
+        EventLog el = EventLog.getInstance();
+        for (Event next : el) {
+            l.add(next);
+        }
+        return l.get(index).getDescription().equals(logDescription);
+    }
 }

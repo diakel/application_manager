@@ -31,12 +31,14 @@ public class ApplicationList implements Writable {
             }
         }
         applicationList.add(application);
+        EventLog.getInstance().logEvent(new Event("Added application: " + application.getName()));
     }
 
     // MODIFIES: this
     // EFFECTS: removes an application from the list
     public void removeApplication(Application app) {
         applicationList.remove(app);
+        EventLog.getInstance().logEvent(new Event("Removed application: " + app.getName()));
     }
 
     // REQUIRES: all applications in the list must have deadlines
