@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.stream.Stream;
 
-import exceptions.AlreadyExistsException;
-import exceptions.ApplicationAlreadyExistsException;
 import model.Application;
 import model.ApplicationList;
 import model.Requirement;

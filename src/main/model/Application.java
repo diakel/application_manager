@@ -5,7 +5,6 @@ import exceptions.RequirementAlreadyExistsException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
-import ui.RequirementsUI;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

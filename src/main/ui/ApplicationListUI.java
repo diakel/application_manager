@@ -41,8 +41,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
-import java.util.List;
 
 // Code sources: - https://docs.oracle.com/javase/tutorial/uiswing/components/list.html#mutable - how to work with lists + ListDemoProject
 //               - https://stackoverflow.com/a/43533541 - adding elements to list model
@@ -99,16 +97,21 @@ public class ApplicationListUI extends JPanel
         add(toolPanel, BorderLayout.PAGE_START);
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets the application list
     public void setApplicationList(ApplicationList appList) {
         applicationList = appList;
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates a remove button
     private void createRemoveButton() {
         removeButton = new JButton(removeString);
         removeButton.setActionCommand(removeString);
         removeButton.addActionListener(new RemoveListener());
     }
 
+    // MODIFIES: this
     // EFFECTS: constructs an upper panel with the search and sort functions
     private JPanel createToolPanel() {
         JPanel toolPanel = new JPanel(new GridLayout(1, 0));
@@ -133,6 +136,7 @@ public class ApplicationListUI extends JPanel
         return toolPanel;
     }
 
+    // MODIFIES: this
     // EFFECTS: creates a sort menu with options to sort by deadlines or return the original order
     private JMenu createSortMenu() {
         JMenuItem menuItem;
@@ -152,20 +156,16 @@ public class ApplicationListUI extends JPanel
     // MODIFIES: this
     // EFFECTS: creates and returns button pane in the bottom of the pane
     private JPanel getButtonPane(JButton addButton) {
-        //Create a panel that uses BoxLayout. (no)
         JPanel buttonPane = new JPanel();
-  //      buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setLayout(new GridLayout(1, 0));
         buttonPane.add(removeButton);
- //       buttonPane.add(Box.createHorizontalStrut(5));
-//        buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-//        buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(applicationName);
         buttonPane.add(addButton);
         buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         return buttonPane;
     }
 
+    // MODIFIES: this
     // EFFECTS: initialized the list and puts it on a new scroll pane
     private JScrollPane getJScrollPane() {
         list = new JList(listModel);
@@ -198,14 +198,12 @@ public class ApplicationListUI extends JPanel
         return appList;
     }
 
+    // represents a listener for the remove button
     class RemoveListener implements ActionListener {
 
         // MODIFIES: this
         // EFFECTS: removes selected application, sets the index, disables remove button if there is nothing left
         public void actionPerformed(ActionEvent e) {
-            //This method can be called only if
-            //there's a valid selection
-            //so go ahead and remove whatever's selected.
             int index = list.getSelectedIndex();
             Application appToRemove = getSelectedApplication();
             listModel = (DefaultListModel) list.getModel();
@@ -238,7 +236,6 @@ public class ApplicationListUI extends JPanel
             this.button = button;
         }
 
-        //Required by ActionListener.
         // MODIFIES: this
         // EFFECTS: adds a new application in the appropriate place and to the application list
         public void actionPerformed(ActionEvent e) {
@@ -281,28 +278,38 @@ public class ApplicationListUI extends JPanel
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables the button if something is inserted into the text field
         public void insertUpdate(DocumentEvent e) {
             enableButton();
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: reacts to the removal from the text field
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables button if the text field is not empty
         public void changedUpdate(DocumentEvent e) {
             if (!handleEmptyTextField(e)) {
                 enableButton();
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: enables button
         private void enableButton() {
             if (!alreadyEnabled) {
                 button.setEnabled(true);
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: if the text field is empty, disable the button and return true; otherwise, return false
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0) {
                 button.setEnabled(false);
@@ -339,11 +346,11 @@ public class ApplicationListUI extends JPanel
 
                 listModel = (DefaultListModel) list.getModel();
                 filterApplicationList(name);
-                button.setText("Go back");
+             //   button.setText("Go back");
                 button.setActionCommand("Return");
             } else {
                 list.setModel(listModel);
-                button.setText("Search");
+              //  button.setText("Search");
                 button.setActionCommand("Search");
             }
 
@@ -354,6 +361,8 @@ public class ApplicationListUI extends JPanel
             setIndex();
         }
 
+        // MODIFIES: this
+        // EFFECTS: sets the appropriate index
         private void setIndex() {
             int index = list.getSelectedIndex(); //get selected index
             if (index == -1) { //no selection, so insert at beginning
@@ -371,6 +380,8 @@ public class ApplicationListUI extends JPanel
             list.ensureIndexIsVisible(index);
         }
 
+        // MODIFIES: this
+        // EFFECTS: filters applications by their deadlines and sets the new list model
         private void filterApplicationList(String name) {
             DefaultListModel filteredList = new DefaultListModel();
             for (Application app : applicationList.getApplicationList()) {
@@ -384,28 +395,38 @@ public class ApplicationListUI extends JPanel
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables button
         public void insertUpdate(DocumentEvent e) {
             enableButton();
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: handles the text field if there is a removal
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables button if the text field is not empty
         public void changedUpdate(DocumentEvent e) {
             if (!handleEmptyTextField(e)) {
                 enableButton();
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: enables button
         private void enableButton() {
             if (!alreadyEnabled) {
                 button.setEnabled(true);
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: enables button if the text field is not empty
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0  && button.getActionCommand().equals("Search")) {
                 button.setEnabled(false);
@@ -416,6 +437,8 @@ public class ApplicationListUI extends JPanel
         }
     }
 
+
+   // represents a listener for the sort menu
     class SortListener implements ActionListener {
         // MODIFIES: this
         // EFFECTS: sorts applications by deadlines or returns original order
@@ -466,6 +489,7 @@ public class ApplicationListUI extends JPanel
     }
 
     //This method is required by ListSelectionListener.
+    // MODIFIES: this
     // EFFECTS: sets the appropriate requirements for the selected application, enables/disables remove button
     public void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting() == false) {
@@ -496,12 +520,14 @@ public class ApplicationListUI extends JPanel
         requirementsList.setCategoryTextField();
     }
 
+    // represents a custom cell renderer for the JList
     class MyListCellRenderer extends DefaultListCellRenderer implements ListCellRenderer<Object> {
 
         public MyListCellRenderer() {
             setOpaque(true);
         }
 
+        // MODIFIES: this
         // EFFECTS: sets appropriate colors when an application is selected, if there is a deadline, adds it to the name
         public Component getListCellRendererComponent(JList paramList, Object value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {

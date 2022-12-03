@@ -40,7 +40,7 @@ As a user, I want to be able to:
 - Load my application list (with all the structure intact) from a file
 
   ### Instructions for Grader
-Run ApplicationManagerUI (don't press enter button if you can help it)
+Run ApplicationManagerUI 
 - You can generate the first required event by typing in the name of the new application and pressing "Add Application" button
 - You can generate the second required event by typing in the name of the requirement for the selected application and pressing "Add Requirement"
 - You can locate my visual component by right-clicking a requirement and pressing "completed" button in the popup menu, the progress bar should change
@@ -52,7 +52,7 @@ Run ApplicationManagerUI (don't press enter button if you can help it)
 - You can remove application or requirement by selecting it and pressing remove application/requirement
 - You can set the deadline for the selected application in the spinner at the top of the requirements pane.
 - You can set the category by typing it in the text field and pressing "Set category" button
-- You can search by both name and category in the search pane at the top of the applications pane
+- You can search by both name and category in the search pane at the top of the applications pane (press search again to return back)
 - You can sort the applications by deadlines or return to the original order by pressing "Sort by" menu
 
   ### Phase 4: Task 2
@@ -91,4 +91,10 @@ Removed requirement References for UBC
 
 Thu Dec 01 17:50:14 PST 2022
 Removed application: UBC
+
+  ### Phase 4: Task 3
+If I had more time, I would create an abstract class, e.g. ListsUI and have 
+ApplicationListUI and RequirementsUI classes extend it since there is some 
+code duplication between those two. I might have implemented Observer pattern since
+RequirementsUI change when the selected application in ApplicationListUI changes. 
 

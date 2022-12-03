@@ -123,6 +123,7 @@ public class RequirementsUI extends JPanel
         }
     }
 
+    // MODIFIES: this
     // EFFECTS: constructs an upper panel with the progress bar, deadline and category setter
     private JPanel getCompletionPanel() {
         // Progress bar
@@ -146,6 +147,7 @@ public class RequirementsUI extends JPanel
         return completionPanel;
     }
 
+    // MODIFIES: this
     // EFFECTS: creates a JPanel with a text field and a button to set the category for the application
     private JPanel createCategoryPanel() {
         JButton categoryButton = new JButton("Set category");
@@ -165,6 +167,8 @@ public class RequirementsUI extends JPanel
         return categoryPanel;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets the category in the text field if there is one
     public void setCategoryTextField() {
         if (!selectedApplication.getCategory().isEmpty()) {
             categoryName.setText(selectedApplication.getCategory());
@@ -173,22 +177,19 @@ public class RequirementsUI extends JPanel
         }
     }
 
+    // MODIFIES: this
     // EFFECTS: constructs and returns button pane
     private JPanel getButtonPane(JButton addButton) {
-        //Create a panel that uses BoxLayout. (no)
         JPanel buttonPane = new JPanel();
-   //     buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
         buttonPane.setLayout(new GridLayout(1, 0));
         buttonPane.add(removeButton);
-     //   buttonPane.add(Box.createHorizontalStrut(5));
-    //    buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-     //   buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(requirementName);
         buttonPane.add(addButton);
         buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         return buttonPane;
     }
 
+    // MODIFIES: this
     // EFFECTS: construct the list and puts it on the JScrollPane
     private JScrollPane getJScrollPane() {
         //Create the list and put it in a scroll pane.
@@ -238,9 +239,11 @@ public class RequirementsUI extends JPanel
         dateSpinner.setValue(date);
     }
 
+    // represents the spinner that sets the deadline
     public class SpinnerDate extends JPanel
             implements ChangeListener {
 
+        // EFFECTS: creates the JSpinner and sets the model for it
         private void createDateSpinner() {
             Date today = new Date();
             SpinnerDateModel dateModel;
@@ -263,6 +266,8 @@ public class RequirementsUI extends JPanel
             return dateSpinner;
         }
 
+        // MODIFIES: this
+        // EFFECTS: sets the deadline for the application if the spinner's value changed
         public void stateChanged(ChangeEvent e) {
             SpinnerModel dateModel = dateSpinner.getModel();
             if (dateModel instanceof SpinnerDateModel) {
@@ -270,12 +275,15 @@ public class RequirementsUI extends JPanel
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: sets the deadline for the application
         protected void setDeadline(Date date) {
             calendar.setTime(date);
             selectedApplication.setDeadline(date);
         }
     }
 
+    // represents a listener for the remove button
     class RemoveListener implements ActionListener {
         // MODIFIES: this
         // EFFECTS: removes selected requirement, selects new index, disables removal if nothing's left
@@ -307,7 +315,7 @@ public class RequirementsUI extends JPanel
         }
     }
 
-    //This listener is shared by the text field and the hire button.
+    //This listener is shared by the text field and the add application button.
     class AddListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
@@ -361,28 +369,38 @@ public class RequirementsUI extends JPanel
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables the button if something is inserted into the text field
         public void insertUpdate(DocumentEvent e) {
             enableButton();
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: reacts to the removal from the text field
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables button if the text field is not empty
         public void changedUpdate(DocumentEvent e) {
             if (!handleEmptyTextField(e)) {
                 enableButton();
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: enables button
         private void enableButton() {
             if (!alreadyEnabled) {
                 button.setEnabled(true);
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: if the text field is empty, disable the button and return true; otherwise, return false
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0) {
                 button.setEnabled(false);
@@ -408,63 +426,43 @@ public class RequirementsUI extends JPanel
         public void actionPerformed(ActionEvent e) {
             String name = categoryName.getText();
 
-            /*//User didn't type in anything
-            if (name.equals("")) {
-                Toolkit.getDefaultToolkit().beep();
-                categoryName.requestFocusInWindow();
-                categoryName.selectAll();
-                return;
-            }*/
-
             selectedApplication.setCategory(name);
 
-        //    if (e.getSource() == categoryName) {
-        //        button.doClick();
-        //    }
-
-       //     setIndex();
-        }
-
-        private void setIndex() {
-            int index = list.getSelectedIndex(); //get selected index
-            if (index == -1) { //no selection, so insert at beginning
-                index = 0;
-            } else {           //add after the selected item
-                index++;
-            }
-
-            //Reset the text field.
-            categoryName.requestFocusInWindow();
-       //     categoryName.setText("");
-
-            //Select the new item and make it visible.
-            list.setSelectedIndex(index);
-            list.ensureIndexIsVisible(index);
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables the button if something is inserted into the text field
         public void insertUpdate(DocumentEvent e) {
             enableButton();
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: reacts to the removal from the text field
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
         }
 
         //Required by DocumentListener.
+        // MODIFIES: this
+        // EFFECTS: enables button if the text field is not empty
         public void changedUpdate(DocumentEvent e) {
             if (!handleEmptyTextField(e)) {
                 enableButton();
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: enables button
         private void enableButton() {
             if (!alreadyEnabled) {
                 button.setEnabled(true);
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: if the text field is empty, disable the button and return true; otherwise, return false
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0) {
                 button.setEnabled(false);
@@ -476,6 +474,7 @@ public class RequirementsUI extends JPanel
     }
 
     //This method is required by ListSelectionListener.
+    // MODIFIES: this
     // EFFECTS: disables/enables buttons depending on whether there is a selection
     public void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting() == false) {
@@ -491,12 +490,14 @@ public class RequirementsUI extends JPanel
         }
     }
 
+    // represents a custom cell renderer
     class MyListCellRenderer extends DefaultListCellRenderer implements ListCellRenderer<Object> {
 
         public MyListCellRenderer() {
             setOpaque(true);
         }
 
+        // MODIFIED: this
         // EFFECTS: highlights completed requirements green, adds a file name if there is one uploaded and does
         // default list rendering
         public Component getListCellRendererComponent(JList paramList, Object value,
@@ -519,6 +520,7 @@ public class RequirementsUI extends JPanel
         }
     }
 
+    // represents a popup menu
     class PopupMenu implements ActionListener {
 
         // MODIFIES: this
@@ -592,6 +594,7 @@ public class RequirementsUI extends JPanel
             }
         }
 
+        // represents a listener for the popup menu
         class PopupListener extends MouseAdapter {
             JPopupMenu popup;
 
@@ -599,10 +602,12 @@ public class RequirementsUI extends JPanel
                 popup = popupMenu;
             }
 
+            // EFFECTS: shows the popup menu if the right button is pressed
             public void mousePressed(MouseEvent e) {
                 showPopup(e);
             }
 
+            // EFFECTS: shows the popup menu if the right button is pressed
             public void mouseReleased(MouseEvent e) {
                 showPopup(e);
             }
@@ -639,8 +644,6 @@ public class RequirementsUI extends JPanel
     }
 
     public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
