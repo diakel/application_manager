@@ -1,6 +1,6 @@
-## My Personal Project
+## Applications Manager
 
-### *Proposal*
+### *Description*
 
 <p> I am planning to design an <strong>application manager</strong> 
 which 
@@ -24,7 +24,6 @@ for them would be useful.</p>
 
 ### *User Stories*
 
-For now, 4 user stories that will be available in the console (outside of console, much more is implemented and tested):
 As a user, I want to be able to:
 - Add an application to my list of applications
 - Remove an application from my list
@@ -39,7 +38,8 @@ As a user, I want to be able to:
 - Save my application list (with all the underlying requirements, files, etc.) to a file
 - Load my application list (with all the structure intact) from a file
 
-  ### Instructions for Grader
+### *Instructions*
+
 Run ApplicationManagerUI 
 - You can generate the first required event by typing in the name of the new application and pressing "Add Application" button
 - You can generate the second required event by typing in the name of the requirement for the selected application and pressing "Add Requirement"
@@ -55,46 +55,5 @@ Run ApplicationManagerUI
 - You can search by both name and category in the search pane at the top of the applications pane (press search again to return back)
 - You can sort the applications by deadlines or return to the original order by pressing "Sort by" menu
 
-  ### Phase 4: Task 2
-Thu Dec 01 17:47:55 PST 2022
-Added application: UBC
 
-Thu Dec 01 17:48:27 PST 2022
-Added requirement Transcript for UBC
-
-Thu Dec 01 17:48:36 PST 2022
-Added requirement References for UBC
-
-Thu Dec 01 17:48:42 PST 2022
-Set category Grad schools for UBC
-
-Thu Dec 01 17:49:06 PST 2022
-Set the deadline 10-01-23 23:59 PM for UBC
-
-Thu Dec 01 17:49:16 PST 2022
-Changed status of Transcript to completed
-
-Thu Dec 01 17:49:24 PST 2022
-Uploaded file Unofficial_transcript.pdf for Transcript
-
-Thu Dec 01 17:49:32 PST 2022
-Opened file Unofficial_transcript.pdf for Transcript
-
-Thu Dec 01 17:49:37 PST 2022
-Deleted file Unofficial_transcript.pdf for Transcript
-
-Thu Dec 01 17:49:44 PST 2022
-Changed status of Transcript to incomplete
-
-Thu Dec 01 17:50:03 PST 2022
-Removed requirement References for UBC
-
-Thu Dec 01 17:50:14 PST 2022
-Removed application: UBC
-
-  ### Phase 4: Task 3
-If I had more time, I would create an abstract class, e.g. ListsUI and have 
-ApplicationListUI and RequirementsUI classes extend it since there is some 
-code duplication between those two. I might have implemented Observer pattern since
-RequirementsUI change when the selected application in ApplicationListUI changes. 
 
